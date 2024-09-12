@@ -1,0 +1,460 @@
+X.Glycolysis..Embden.Meyerhof.pathway...glucose....pyruvate.	X.18.
+Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	18
+Glycolysis, core module involving three-carbon compounds	10
+Gluconeogenesis, oxaloacetate => fructose-6P	12
+Pentose phosphate pathway (Pentose phosphate cycle)	9
+PRPP biosynthesis, ribose 5P => PRPP	1
+Pentose phosphate pathway, oxidative phase, glucose 6P => ribulose 5P	3
+Pentose phosphate pathway, non-oxidative phase, fructose 6P => ribose 5P	4
+Entner-Doudoroff pathway, glucose-6P => glyceraldehyde-3P + pyruvate	3
+Citrate cycle (TCA cycle, Krebs cycle)	24
+Citrate cycle, first carbon oxidation, oxaloacetate => 2-oxoglutarate	6
+Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	18
+Glyoxylate cycle	4
+Malonate semialdehyde pathway, propanoyl-CoA => acetyl-CoA	1
+Glucuronate pathway (uronate pathway)	7
+Proline biosynthesis, glutamate => proline	3
+Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	12
+Methionine biosynthesis, aspartate => homoserine => methionine	10
+Threonine biosynthesis, aspartate => homoserine => threonine	10
+Valine/isoleucine biosynthesis, pyruvate => valine / 2-oxobutanoate => isoleucine	6
+Serine biosynthesis, glycerate-3P => serine	5
+Cysteine biosynthesis, serine => cysteine	3
+Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	12
+Tryptophan biosynthesis, chorismate => tryptophan	14
+Phenylalanine biosynthesis, chorismate => phenylpyruvate => phenylalanine	10
+Tyrosine biosynthesis, chorismate => HPP => tyrosine	8
+Histidine biosynthesis, PRPP => histidine	16
+GABA (gamma-Aminobutyrate) shunt	7
+Ornithine biosynthesis, glutamate => ornithine	12
+Urea cycle	4
+Lysine biosynthesis, AAA pathway, 2-oxoglutarate => 2-aminoadipate => lysine	3
+Lysine biosynthesis, mediated by LysW, 2-aminoadipate => lysine	5
+Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	3
+Ectoine biosynthesis, aspartate => ectoine	4
+Methionine salvage pathway	10
+Methionine degradation	6
+Leucine degradation, leucine => acetoacetate + acetyl-CoA	9
+Melatonin biosynthesis, animals, tryptophan => serotonin => melatonin	0
+Tryptophan metabolism, tryptophan => kynurenine => 2-aminomuconate	6
+Monolignol biosynthesis, phenylalanine/tyrosine => monolignol	1
+Tyrosine biosynthesis, chorismate => arogenate => tyrosine	6
+Catecholamine biosynthesis, tyrosine => dopamine => noradrenaline => adrenaline	0
+Thyroid hormone biosynthesis, tyrosine => triiodothyronine/thyroxine	0
+Tyrosine degradation, tyrosine => homogentisate	2
+Histidine degradation, histidine => N-formiminoglutamate => glutamate	2
+Pyrimidine degradation, uracil => beta-alanine, thymine => 3-aminoisobutanoate	4
+Creatine pathway	0
+De novo purine biosynthesis, PRPP + glutamine => IMP	18
+Adenine ribonucleotide biosynthesis, IMP => ADP,ATP	4
+Guanine ribonucleotide biosynthesis, IMP => GDP,GTP	3
+De novo pyrimidine biosynthesis, glutamine (+ PRPP) => UMP	13
+Pyrimidine ribonucleotide biosynthesis, UMP => UDP/UTP,CDP/CTP	3
+Deoxyribonucleotide biosynthesis, ADP/GDP/CDP/UDP => dATP/dGTP/dCTP/dUTP	2
+N-glycan precursor biosynthesis	1
+O-glycan biosynthesis, mucin type core	0
+Glycosaminoglycan biosynthesis, linkage tetrasaccharide	0
+Glycosaminoglycan biosynthesis, chondroitin sulfate backbone	0
+Glycosaminoglycan biosynthesis, heparan sulfate backbone	0
+KDO2-lipid A biosynthesis, Raetz pathway, LpxL-LpxM type	3
+D-Glucuronate degradation, D-glucuronate => pyruvate + D-glyceraldehyde 3P	3
+CMP-KDO biosynthesis	4
+ADP-L-glycero-D-manno-heptose biosynthesis	5
+GPI-anchor biosynthesis, core oligosaccharide	0
+Lactosylceramide biosynthesis	0
+Sulfoglycolipids biosynthesis, ceramide/1-alkyl-2-acylglycerol => sulfatide/seminolipid	0
+Glycosphingolipid biosynthesis, globo-series, LacCer => Gb4Cer	0
+Glycosphingolipid biosynthesis, ganglio series, LacCer => GT3	0
+Glycosphingolipid biosynthesis, lacto-series, LacCer => Lc4Cer	0
+Glycosphingolipid biosynthesis, neolacto-series, LacCer => nLc4Cer	0
+N-glycosylation by oligosaccharyltransferase	0
+N-glycan precursor trimming	0
+N-glycan biosynthesis, high-mannose type	0
+N-glycan biosynthesis, complex type	0
+Dermatan sulfate degradation	1
+Chondroitin sulfate degradation	1
+Heparan sulfate degradation	2
+Keratan sulfate degradation	1
+Pectin degradation	0
+Fatty acid biosynthesis, initiation	12
+Fatty acid biosynthesis, elongation	12
+Fatty acid elongation in mitochondria	1
+beta-Oxidation, acyl-CoA synthesis	1
+beta-Oxidation	3
+Ketone body biosynthesis, acetyl-CoA => acetoacetate/3-hydroxybutyrate/acetone	4
+Triacylglycerol biosynthesis	2
+Phosphatidylcholine (PC) biosynthesis, choline => PC	0
+Phosphatidylcholine (PC) biosynthesis, PE => PC	1
+Phosphatidylethanolamine (PE) biosynthesis, ethanolamine => PE	0
+Phosphatidylethanolamine (PE) biosynthesis, PA => PS => PE	3
+Ceramide biosynthesis	1
+C5 isoprenoid biosynthesis, mevalonate pathway	4
+C5 isoprenoid biosynthesis, non-mevalonate pathway	8
+beta-Carotene biosynthesis, GGAP => beta-carotene	4
+Acylglycerol degradation	1
+Sphingosine biosynthesis	1
+Sphingosine degradation	2
+Cholesterol biosynthesis, squalene 2,3-epoxide => cholesterol	0
+Ergocalciferol biosynthesis, squalene 2,3-epoxide => ergosterol/ergocalciferol	1
+Cholecalciferol biosynthesis	0
+Bile acid biosynthesis, cholesterol => cholate/chenodeoxycholate	0
+Conjugated bile acid biosynthesis, cholate => taurocholate/glycocholate	0
+Steroid hormone biosynthesis, cholesterol => prognenolone => progesterone	0
+C21-Steroid hormone biosynthesis, progesterone => corticosterone/aldosterone	0
+C21-Steroid hormone biosynthesis, progesterone => cortisol/cortisone	0
+C19/C18-Steroid hormone biosynthesis, pregnenolone => androstenedione => estrone	0
+Tocopherol/tocotorienol biosynthesis, homogentisate + phytyl/geranylgeranyl-PP => tocopherol/tocotorienol	1
+Jasmonic acid biosynthesis	0
+Ascorbate biosynthesis, plants, fructose-6P => ascorbate	2
+NAD biosynthesis, aspartate => quinolinate => NAD	7
+Menaquinone biosynthesis, chorismate (+ polyprenyl-PP) => menaquinol	7
+Ubiquinone biosynthesis, prokaryotes, chorismate (+ polyprenyl-PP) => ubiquinol	7
+Glutathione biosynthesis, glutamate => glutathione	0
+Pantothenate biosynthesis, valine/L-aspartate => pantothenate	3
+Coenzyme A biosynthesis, pantothenate => CoA	8
+Heme biosynthesis, plants and bacteria, glutamate => heme	10
+Cobalamin biosynthesis, cobyrinate a,c-diamide => cobalamin	9
+Biotin biosynthesis, pimeloyl-ACP/CoA => biotin	6
+Pyridoxal-P biosynthesis, erythrose-4P => pyridoxal-P	3
+Riboflavin biosynthesis, plants and bacteria, GTP => riboflavin/FMN/FAD	11
+Tetrahydrofolate biosynthesis, GTP => THF	11
+Thiamine biosynthesis, prokaryotes, AIR (+ DXP/tyrosine) => TMP/TPP	8
+Ubiquinone biosynthesis, eukaryotes, 4-hydroxybenzoate + polyprenyl-PP => ubiquinol	1
+Ascorbate biosynthesis, animals, glucose-1P => ascorbate	4
+Inositol phosphate metabolism, PI=> PIP2 => Ins(1,4,5)P3 => Ins(1,3,4,5)P4	0
+Inositol phosphate metabolism, Ins(1,3,4,5)P4 => Ins(1,3,4)P3 => myo-inositol	0
+Inositol phosphate metabolism, Ins(1,3,4)P3 => phytate	0
+Polyamine biosynthesis, arginine => agmatine => putrescine => spermidine	3
+Polyamine biosynthesis, arginine => ornithine => putrescine	1
+GABA biosynthesis, eukaryotes, putrescine => GABA	3
+GABA biosynthesis, prokaryotes, putrescine => GABA	4
+Flavanone biosynthesis, phenylalanine => naringenin	0
+Flavonoid biosynthesis, naringenin => pelargonidin	0
+C1-unit interconversion, prokaryotes	2
+C1-unit interconversion, eukaryotes	2
+NADH:ubiquinone oxidoreductase, mitochondria	0
+NADH dehydrogenase (ubiquinone) Fe-S protein/flavoprotein complex, mitochondria	0
+NADH:quinone oxidoreductase, prokaryotes	0
+NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	0
+NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	0
+NADH dehydrogenase (ubiquinone) 1 beta subcomplex	0
+Succinate dehydrogenase (ubiquinone)	0
+Succinate dehydrogenase, prokaryotes	2
+Fumarate reductase, prokaryotes	2
+Cytochrome bc1 complex respiratory unit	0
+Cytochrome bc1 complex	0
+Cytochrome bd ubiquinol oxidase	0
+Cytochrome c oxidase	0
+Cytochrome c oxidase, prokaryotes	0
+Cytochrome c oxidase, cbb3-type	0
+F-type ATPase, prokaryotes and chloroplasts	0
+F-type ATPase, eukaryotes	0
+V/A-type ATPase, prokaryotes	0
+V-type ATPase, eukaryotes	0
+Photosystem II	0
+Cytochrome b6f complex	0
+Photosystem I	0
+Reductive pentose phosphate cycle (Calvin cycle)	8
+Reductive pentose phosphate cycle, ribulose-5P => glyceraldehyde-3P	5
+Reductive pentose phosphate cycle, glyceraldehyde-3P => ribulose-5P	3
+CAM (Crassulacean acid metabolism), dark	1
+CAM (Crassulacean acid metabolism), light	2
+C4-dicarboxylic acid cycle, phosphoenolpyruvate carboxykinase type	1
+C4-dicarboxylic acid cycle, NAD - malic enzyme type	2
+C4-dicarboxylic acid cycle, NADP - malic enzyme type	2
+Reductive citrate cycle (Arnon-Buchanan cycle)	33
+Methane oxidation, methanotroph, methane => formaldehyde	1
+Nitrogen fixation, nitrogen => ammonia	1
+Assimilatory sulfate reduction, sulfate => H2S	5
+Pyruvate oxidation, pyruvate => acetyl-CoA	11
+Semi-phosphorylative Entner-Doudoroff pathway, gluconate => glycerate-3P	7
+Non-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate	5
+Cysteine biosynthesis, homocysteine + serine => cysteine	3
+Formaldehyde assimilation, xylulose monophosphate pathway	1
+Formaldehyde assimilation, ribulose monophosphate pathway	7
+Formaldehyde assimilation, serine pathway	5
+Methanogenesis, methanol => methane	7
+Methanogenesis, acetate => methane	11
+Coenzyme M biosynthesis	2
+EHEC pathogenicity signature, Shiga toxin	0
+C10-C20 isoprenoid biosynthesis, bacteria	3
+C10-C20 isoprenoid biosynthesis, archaea	1
+C10-C20 isoprenoid biosynthesis, plants	1
+C10-C20 isoprenoid biosynthesis, non-plant eukaryotes	0
+Ethylene biosynthesis, methionine => ethylene	3
+Cyanogenic glycoside biosynthesis, tyrosine => dhurrin	0
+Glucosinolate biosynthesis, tryptophan => glucobrassicin	0
+Castasterone biosynthesis, campesterol => castasterone	0
+Abscisic acid biosynthesis, beta-carotene => abscisic acid	0
+Ethylmalonyl pathway	8
+Dicarboxylate-hydroxybutyrate cycle	17
+Hydroxypropionate-hydroxybutylate cycle	12
+3-Hydroxypropionate bi-cycle	11
+Reductive acetyl-CoA pathway (Wood-Ljungdahl pathway)	8
+F420 biosynthesis, archaea	2
+Fatty acid elongation in endoplasmic reticulum	1
+Cytochrome aa3-600 menaquinol oxidase	0
+Cytochrome o ubiquinol oxidase	0
+Toluene degradation, anaerobic, toluene => benzoyl-CoA	3
+Cymene degradation, p-cymene => p-cumate	2
+Acetyl-CoA pathway, CO2 => acetyl-CoA	3
+Leucine biosynthesis, 2-oxoisovalerate => 2-oxoisocaproate	4
+Lysine biosynthesis, 2-oxoglutarate => 2-oxoadipate	5
+Lysine biosynthesis, acetyl-DAP pathway, aspartate => lysine	7
+Lysine biosynthesis, DAP dehydrogenase pathway, aspartate => lysine	8
+Lysine biosynthesis, DAP aminotransferase pathway, aspartate => lysine	9
+Nitrification, ammonia => nitrite	0
+Denitrification, nitrate => nitrogen	1
+Dissimilatory nitrate reduction, nitrate => ammonia	2
+Assimilatory nitrate reduction, nitrate => ammonia	2
+Photorespiration	6
+Homoprotocatechuate degradation, homoprotocatechuate => 2-oxohept-3-enedioate	1
+Naphthalene degradation, naphthalene => salicylate	2
+Isoleucine biosynthesis, pyruvate => 2-oxobutanoate	4
+Xylene degradation, xylene => methylbenzoate	2
+Toluene degradation, toluene => benzoate	3
+Cumate degradation, p-cumate => 2-oxopent-4-enoate + 2-methylpropanoate	3
+Benzoate degradation, cyclohexanecarboxylic acid =>pimeloyl-CoA	2
+Benzoyl-CoA degradation, benzoyl-CoA => 3-hydroxypimeloyl-CoA	3
+EHEC/EPEC pathogenicity signature, T3SS and effectors	0
+Biphenyl degradation, biphenyl => 2-oxopent-4-enoate + benzoate	2
+Carbazole degradation, carbazole => 2-oxopent-4-enoate + anthranilate	1
+Trans-cinnamate degradation, trans-cinnamate => acetyl-CoA	5
+Purine degradation, xanthine => urea	13
+Benzene/toluene degradation, benzene => catechol / toluene => 3-methylcatechol	2
+Benzene degradation, benzene => catechol	1
+Nucleotide sugar biosynthesis, glucose => UDP-glucose	4
+Ascorbate degradation, ascorbate => D-xylulose-5P	5
+Benzoate degradation, benzoate => catechol / methylbenzoate => methylcatechol	2
+D-galactonate degradation, De Ley-Doudoroff pathway, D-galactonate => glycerate-3P	4
+Nucleotide sugar biosynthesis, galactose => UDP-galactose	2
+Betaine biosynthesis, choline => betaine	3
+Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	9
+Helicobacter pylori pathogenicity signature, cagA pathogenicity island	0
+Trehalose biosynthesis, D-glucose 1P => trehalose	5
+Methanogenesis, CO2 => methane	11
+Catechol ortho-cleavage, catechol => 3-oxoadipate	2
+Catechol meta-cleavage, catechol => acetyl-CoA / 4-methylcatechol => propanoyl-CoA	5
+Isoleucine biosynthesis, threonine => 2-oxobutanoate => isoleucine	8
+Pimeloyl-ACP biosynthesis, BioC-BioH pathway, malonyl-ACP => pimeloyl-ACP	6
+Biotin biosynthesis, BioI pathway, long-chain-acyl-ACP => pimeloyl-ACP => biotin	4
+Pertussis pathogenicity signature, pertussis toxin	0
+Pertussis pathogenicity signature, T1SS	0
+ETEC pathogenicity signature, heat-labile and heat-stable enterotoxins	0
+Biotin biosynthesis, BioW pathway, pimelate => pimeloyl-CoA => biotin	5
+Phosphate acetyltransferase-acetate kinase pathway, acetyl-CoA => acetate	3
+Pentose phosphate pathway, archaea, fructose 6P => ribose 5P	4
+Thiosulfate oxidation by SOX complex, thiosulfate => sulfate	0
+Dissimilatory sulfate reduction, sulfate => H2S	4
+Anoxygenic photosystem II	0
+Anoxygenic photosystem I	0
+2-Oxocarboxylic acid chain extension, 2-oxoglutarate => 2-oxoadipate => 2-oxopimelate => 2-oxosuberate	4
+Cysteine biosynthesis, methionine => cysteine	6
+Oxygenic photosynthesis in plants and cyanobacteria	9
+Anoxygenic photosynthesis in purple bacteria	9
+Anoxygenic photosynthesis in green nonsulfur bacteria	20
+Anoxygenic photosynthesis in green sulfur bacteria	30
+Nitrate assimilation	2
+Sulfate-sulfur assimilation	5
+Methanogen	17
+Acetogen	11
+Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	16
+Nicotinate degradation, nicotinate => fumarate	3
+Phthalate degradation, phthalate => protocatechuate	2
+Terephthalate degradation, terephthalate => 3,4-dihydroxybenzoate	0
+Methicillin resistance	0
+beta-Lactam resistance, Bla system	1
+D-Galacturonate degradation (fungi), D-galacturonate => glycerol	0
+D-Galacturonate degradation (bacteria), D-galacturonate => pyruvate + D-glyceraldehyde 3P	2
+Galactose degradation, Leloir pathway, galactose => alpha-D-glucose-1P	4
+Semi-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate-3P	4
+Phthalate degradation, phthalate => protocatechuate	2
+Anthranilate degradation, anthranilate => catechol	2
+Salicylate degradation, salicylate => gentisate	1
+Multidrug resistance, efflux pump MexCD-OprJ	0
+Multidrug resistance, efflux pump MexEF-OprN	0
+Multidrug resistance, efflux pump MexJK-OprM	0
+Multidrug resistance, efflux pump MexXY-OprM	0
+Multidrug resistance, efflux pump AdeABC	0
+Vancomycin resistance, D-Ala-D-Lac type	1
+Vancomycin resistance, D-Ala-D-Ser type	0
+Xanthomonas spp. pathogenicity signature, T3SS and effectors	0
+Paspaline biosynthesis, geranylgeranyl-PP + indoleglycerol phosphate => paspaline	0
+Nodulation	0
+Penicillin biosynthesis, aminoadipate + cycteine + valine => penicillin	1
+Cephamycin C biosynthesis, aminoadipate + cycteine + valine => cephamycin C	2
+Clavaminate biosynthesis, arginine + glyceraldehyde-3P => clavaminate	2
+Carbapenem-3-carboxylate biosynthesis, pyrroline-5-carboxylate + malonyl-CoA => carbapenem-3-carboxylate	1
+Multidrug resistance, efflux pump AcrEF-TolC	0
+Multidrug resistance, efflux pump MdtEF-TolC	0
+Multidrug resistance, efflux pump BpeEF-OprC	0
+Multidrug resistance, efflux pump AbcA	0
+Multidrug resistance, efflux pump NorB	0
+Tetracycline resistance, efflux pump Tet38	0
+Multidrug resistance, efflux pump MepA	0
+Multidrug resistance, efflux pump QacA	0
+Multidrug resistance, efflux pump MexAB-OprM	0
+Cationic antimicrobial peptide (CAMP) resistance, dltABCD operon	2
+Cationic antimicrobial peptide (CAMP) resistance, lysyl-phosphatidylglycerol (L-PG) synthase MprF	0
+Cationic antimicrobial peptide (CAMP) resistance, VraFG transporter	0
+Nocardicin A biosynthesis, L-pHPG + arginine + serine => nocardicin A	0
+Methylaspartate cycle	7
+Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	10
+Cationic antimicrobial peptide (CAMP) resistance, protease PgtE	0
+Imipenem resistance, repression of porin OprD	0
+Multidrug resistance, repression of porin OmpF	0
+Undecaprenylphosphate alpha-L-Ara4N biosynthesis, UDP-GlcA => undecaprenyl phosphate alpha-L-Ara4N	3
+Ornithine biosynthesis, mediated by LysW, glutamate => ornithine	5
+Multidrug resistance, efflux pump MexPQ-OpmE	0
+Tylosin biosynthesis, methylmalonyl-CoA + malonyl-CoA => tylactone => tylosin	0
+Erythromycin biosynthesis, propanoyl-CoA + methylmalonyl-CoA => deoxyerythronolide B => erythromycin A/B	1
+Oleandomycin biosynthesis, malonyl-CoA + methylmalonyl-CoA => 8,8a-deoxyoleandolide => oleandomycin	0
+Pikromycin/methymycin biosynthesis, methylmalonyl-CoA + malonyl-CoA => narbonolide/10-deoxymethynolide => pikromycin/methymycin	0
+Avermectin biosynthesis, 2-methylbutanoyl-CoA/isobutyryl-CoA => 6,8a-Seco-6,8a-deoxy-5-oxoavermectin 1a/1b aglycone => avermectin A1a/B1a/A1b/B1b	2
+Type II polyketide backbone biosynthesis, acyl-CoA + malonyl-CoA => polyketide	6
+Dihydrokalafungin biosynthesis, octaketide => dihydrokalafungin	3
+Tetracycline/oxytetracycline biosynthesis, pretetramide => tetracycline/oxytetracycline	2
+Nogalavinone/aklavinone biosynthesis, deoxynogalonate/deoxyaklanonate => nogalavinone/aklavinone	1
+Mithramycin biosynthesis, 4-demethylpremithramycinone => mithramycin	0
+Tetracenomycin C/8-demethyltetracenomycin C biosynthesis, tetracenomycin F2 => tetracenomycin C/8-demethyltetracenomycin C	0
+Elloramycin biosynthesis, 8-demethyltetracenomycin C => elloramycin A	3
+Cycloserine biosynthesis, arginine/serine => cycloserine	5
+Fumitremorgin alkaloid biosynthesis, tryptophan + proline => fumitremorgin C/A	0
+Bacilysin biosynthesis, prephenate => bacilysin	4
+Terpentecin biosynthesis, GGAP => terpentecin	2
+Rebeccamycin biosynthesis, tryptophan => rebeccamycin	1
+Pyrrolnitrin biosynthesis, tryptophan => pyrrolnitrin	1
+dTDP-L-rhamnose biosynthesis	4
+dTDP-6-deoxy-D-allose biosynthesis	1
+dTDP-beta-L-noviose biosynthesis	0
+dTDP-D-mycaminose biosynthesis	1
+dTDP-D-desosamine biosynthesis	4
+dTDP-L-mycarose biosynthesis	1
+dTDP-L-oleandrose biosynthesis	1
+dTDP-L-megosamine biosynthesis	2
+dTDP-L-olivose biosynthesis	1
+dTDP-D-forosamine biosynthesis	3
+dTDP-D-angolosamine biosynthesis	1
+Complete nitrification, comammox, ammonia => nitrite => nitrate	1
+Staurosporine biosynthesis, tryptophan => staurosporine	1
+Violacein biosynthesis, tryptophan => violacein	0
+Nicotine degradation, pyridine pathway, nicotine => 2,6-dihydroxypyridine/succinate semialdehyde	8
+Nicotine degradation, pyrrolidine pathway, nicotine => succinate semialdehyde	4
+Acarbose biosynthesis, sedoheptulopyranose-7P => acarbose	6
+Validamycin A biosynthesis, sedoheptulopyranose-7P => validamycin A	5
+Pentalenolactone biosynthesis, farnesyl-PP => pentalenolactone	1
+Chlortetracycline biosynthesis, pretetramide => chlortetracycline	2
+9-membered enediyne core biosynthesis, malonyl-CoA => 3-hydroxyhexadeca-4,6,8,10,12,14-hexaenoyl-ACP => 9-membered enediyne core	1
+10-membered enediyne core biosynthesis, malonyl-CoA => 3-hydroxyhexadeca-4,6,8,10,12,14-hexaenoyl-ACP => 10-membered enediyne core	1
+C-1027 benzoxazolinate moiety biosynthesis, chorismate => benzoxazolinyl-CoA	5
+C-1027 beta-amino acid moiety biosynthesis, tyrosine => 3-chloro-4,5-dihydroxy-beta-phenylalanyl-PCP	1
+Maduropeptin beta-hydroxy acid moiety biosynthesis, tyrosine => 3-(4-hydroxyphenyl)-3-oxopropanoyl-PCP	1
+3,6-Dimethylsalicylyl-CoA biosynthesis, malonyl-CoA => 6-methylsalicylate => 3,6-dimethylsalicylyl-CoA	2
+Neocarzinostatin naphthoate moiety biosynthesis, malonyl-CoA => 2-hydroxy-5-methyl-1-naphthoate => 2-hydroxy-7-methoxy-5-methyl-1-naphthoyl-CoA	1
+Kedarcidin 2-hydroxynaphthoate moiety biosynthesis, malonyl-CoA => 3,6,8-trihydroxy-2-naphthoate => 3-hydroxy-7,8-dimethoxy-6-isopropoxy-2-naphthoyl-CoA	2
+Kedarcidin 2-aza-3-chloro-beta-tyrosine moiety biosynthesis, azatyrosine => 2-aza-3-chloro-beta-tyrosyl-PCP	3
+Calicheamicin biosynthesis, calicheamicinone => calicheamicin	2
+Calicheamicin orsellinate moiety biosynthesis, malonyl-CoA => orsellinate-ACP => 5-iodo-2,3-dimethoxyorsellinate-ACP	1
+Pyocyanine biosynthesis, chorismate => pyocyanine	3
+Coenzyme F430 biosynthesis, sirohydrochlorin => coenzyme F430	4
+Prodigiosin biosynthesis, L-proline => prodigiosin	4
+Undecylprodigiosin biosynthesis, L-proline => undecylprodigiosin	4
+Tetrahydrofolate biosynthesis, mediated by ribA and trpF, GTP => THF	4
+Tetrahydrofolate biosynthesis, mediated by PTPS, GTP => THF	3
+Tetrahydrobiopterin biosynthesis, GTP => BH4	1
+L-threo-Tetrahydrobiopterin biosynthesis, GTP => L-threo-BH4	2
+Arginine biosynthesis, ornithine => arginine	4
+Arginine biosynthesis, glutamate => acetylcitrulline => arginine	7
+Siroheme biosynthesis, glutamyl-tRNA => siroheme	9
+Heme biosynthesis, archaea, siroheme => heme	3
+Aurachin biosynthesis, anthranilate => aurachin A	2
+C5 isoprenoid biosynthesis, mevalonate pathway, archaea	5
+Vibrio cholerae pathogenicity signature, cholera toxins	0
+Carbapenem resistance	0
+Vibrio cholerae pathogenicity signature, toxin coregulated pilus	0
+ETEC pathogenicity signature, colonization factors	0
+Glycogen biosynthesis, glucose-1P => glycogen/starch	4
+Glycogen degradation, glycogen => glucose-6P	7
+Salmonella enterica pathogenicity signature, typhoid toxin	0
+Salmonella enterica pathogenicity signature, Vi antigen	1
+Bacillus anthracis pathogenicity signature, anthrax toxin	0
+Bacillus anthracis pathogenicity signature, polyglutamic acid capsule biosynthesis	0
+beta-Oxidation, peroxisome, VLCFA	0
+beta-Oxidation, peroxisome, tri/dihydroxycholestanoyl-CoA => choloyl/chenodeoxycholoyl-CoA	0
+KDO2-lipid A biosynthesis, Raetz pathway, non-LpxL-LpxM type	5
+KDO2-lipid A modification pathway	3
+Heme biosynthesis, animals and fungi, glycine => heme	3
+O-glycan biosynthesis, mannose type (core M3)	0
+Fatty acid biosynthesis in mitochondria, animals	2
+Fatty acid biosynthesis in mitochondria, fungi	3
+Staphyloferrin B biosynthesis, L-serine => staphyloferrin B	2
+Staphyloferrin A biosynthesis, L-ornithine => staphyloferrin A	1
+Kanosamine biosynthesis, glucose 6-phosphate => kanosamine	3
+Phenylacetate degradation, phenylaxetate => acetyl-CoA/succinyl-CoA	4
+Arginine succinyltransferase pathway, arginine => glutamate	2
+Molybdenum cofactor biosynthesis, GTP => molybdenum cofactor	6
+Lipoic acid biosynthesis, plants and bacteria, octanoyl-ACP => dihydrolipoyl-E2/H	0
+Lipoic acid biosynthesis, eukaryotes, octanoyl-ACP => dihydrolipoyl-H	0
+Lipoic acid biosynthesis, animals and bacteria, octanoyl-ACP => dihydrolipoyl-H => dihydrolipoyl-E2	0
+Lipoic acid biosynthesis, octanoyl-CoA => dihydrolipoyl-E2	0
+Puromycin biosynthesis, ATP => puromycin	0
+Roseoflavin biosynthesis, FMN => roseoflavin	0
+Ditryptophenaline biosynthesis, tryptophan + phenylalanine => ditryptophenaline	0
+UDP-N-acetyl-D-glucosamine biosynthesis, eukaryotes, glucose => UDP-GlcNAc	3
+Lovastatin biosynthesis, malonyl-CoA => lovastatin acid	0
+Cannabidiol biosynthesis, malonyl-CoA => cannabidiol/dronabinol	0
+Thiamine biosynthesis, prokaryotes, AIR (+ DXP/glycine) => TMP/TPP	7
+Thiamine biosynthesis, archaea, AIR (+ NAD+) => TMP/TPP	5
+Thiamine biosynthesis, plants, AIR (+ NAD+) => TMP/thiamine/TPP	2
+Thiamine biosynthesis, pyridoxal-5P => TMP/thiamine/TPP	1
+Thiamine salvage pathway, HMP/HET => TMP	4
+Crocin biosynthesis, crocetin => crocin	0
+Fumiquinazoline biosynthesis, tryptophan + alanine + anthranilate => fumiquinazoline	0
+Podophyllotoxin biosynthesis, coniferyl alcohol => podophyllotoxin	1
+Fosfomycin biosynthesis, phosphoenolpyruvate => fosfomycin	1
+Dapdiamides biosynthesis, L-2,3-diaminopropanoate => dapdiamide A/B/C	2
+Grixazone biosynthesis, aspartate 4-semialdehyde => grixazone B	0
+Ethynylserine biosynthesis, lysine => ethynylserine	1
+UDP-N-acetyl-D-glucosamine biosynthesis, prokaryotes, glucose => UDP-GlcNAc	7
+Phenylalanine biosynthesis, chorismate => arogenate => phenylalanine	2
+Riboflavin biosynthesis, fungi, GTP => riboflavin/FMN/FAD	0
+NAD biosynthesis, tryptophan => quinolinate => NAD	8
+Pantothenate biosynthesis, 2-oxoisovalerate/spermine => pantothenate	2
+Coenzyme A biosynthesis, archaea, 2-oxoisovalerate => 4-phosphopantoate => CoA	3
+Caffeine degradation, caffeine => xanthine	0
+Pyridoxal-P biosynthesis, R5P + glyceraldehyde-3P + glutamine => pyridoxal-P	2
+Phytosterol biosynthesis, squalene 2,3-epoxide => campesterol/sitosterol	2
+Aerobactin biosynthesis, lysine => aerobactin	1
+Ectoine degradation, ectoine => aspartate	3
+Cyclooctatin biosynthesis, dimethylallyl-PP + isopentenyl-PP => cyclooctatin	1
+CMP-Neu5Ac biosynthesis	2
+UDP-L-FucNAm biosynthesis	1
+Cobalamin biosynthesis, anaerobic, uroporphyrinogen III => sirohydrochlorin => cobyrinate a,c-diamide	20
+Cobalamin biosynthesis, aerobic, uroporphyrinogen III => precorrin 2 => cobyrinate a,c-diamide	14
+Heme biosynthesis, bacteria, glutamyl-tRNA => coproporphyrin III => heme	6
+Gibberellin A12 biosynthesis, GAPP => GA12	0
+Gibberellin A4/A1 biosynthesis, GA12/GA53 => GA4/GA1	0
+Gibberellin A1 biosynthesis, GGPP => GA1	0
+Menaquinone biosynthesis, futalosine pathway	4
+Menaquinone biosynthesis, modified futalosine pathway	3
+Phylloquinone biosynthesis, chorismate (+ phytyl-PP) => phylloquinol	8
+Plastoquinone biosynthesis, homogentisate + solanesyl-PP => plastoquinol	0
+Mycinamicin biosynthesis, malonyl-CoA + methylmalonyl-CoA => protomycinolide IV => mycinamicin II	0
+Methanofuran biosynthesis	4
+Melatonin biosynthesis, plants, tryptophan => serotonin => melatonin	0
+Aflatoxin biosynthesis, malonyl-CoA => aflatoxin B1	0
+Pyrimidine deoxyribonucleotide biosynthesis, UDP => dTTP	5
+Pyrimidine degradation, uracil => 3-hydroxypropanoate	4
+Flavanone biosynthesis, p-coumaroyl-CoA => liquiritigenin	0
+Isoflavone biosynthesis, liquiritigenin/naringenin => daidzein/genistein	0
+Pterocarpan biosynthesis, daidzein => medicarpin	1
+Reticuline biosynthesis, dopamine + 4HPAA => (S)-reticuline	0
+Morphine biosynthesis, (S)-reticuline => morphine	0
+Sanguinarine biosynthesis, (S)-reticuline => sanguinarine	0
+Noscapine biosynthesis, (S)-reticuline => noscapine	0
+D-Arginine racemization, D-arginine => L-arginine	1
+Hydroxyproline degradation, trans-4-hydroxy-L-proline => 2-oxoglutarate	4
+Staphylopine biosynthesis, L-histidine => staphylopine	0
+Biotin biosynthesis, BioU pathway, pimeloyl-ACP/CoA => biotin	3
+Adenine ribonucleotide degradation, AMP => Urate	12
+Guanine ribonucleotide degradation, GMP => Urate	13
