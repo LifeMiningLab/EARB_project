@@ -3,22 +3,21 @@
 ######################################
 
 library(tidyverse)
-#library(viridis)
 library(dplyr)
 library("ggsci")
 library("ggplot2")
-#library("gridExtra")
 library(gtools)
 library(data.table)
 library(ggpubr)
-#library(lattice)
 library(ggtext)
 library(paletteer)
 library(BioCircos)
 library(circlize)
 library(pheatmap)
-#library(reshape2)
 library(vegan)
+library(VennDiagram)
+require(NMF)
+require(reshape2)
 
 ################################################################################
 
@@ -429,6 +428,8 @@ color_matrix[rows_with_less_or_equal_one_zero, ] <- "red"
 # Generate the chord diagram
 chordDiagram(final_result_matrix, col = color_matrix , grid.col = named_vector, annotationTrack = c('grid'))
 
+table(rows_with_less_or_equal_one_zero)
+
 circos.clear()
 
 ## EARB vs Drug class ##
@@ -506,6 +507,8 @@ color_matrix[rows_with_less_or_equal_one_zero, ] <- "red"
 # Generate the chord diagram
 chordDiagram(final_result_matrix, col = color_matrix , grid.col = named_vector, annotationTrack = c('grid'))
 
+table(rows_with_less_or_equal_one_zero)
+
 plot(1, 1, type="n", xlab="", ylab="", xlim=c(0, 2), ylim=c(0, 2), xaxt='n', yaxt='n')
 legend("center", legend=c(expression(italic("Escherichia")), 
                           expression(italic("Klebsiella")), 
@@ -534,7 +537,6 @@ antibiotics_abun_taxo <- antibiotics_abun_taxo %>% mutate(phylum=ifelse(str_dete
 antibiotics_abun_taxo <- antibiotics_abun_taxo %>% mutate(phylum=ifelse(str_detect(phylum,"p__Desulfobacterota"), "p__Desulfobacterota",phylum)) # p__Desulfobacterota_I -> p__Desulfobacterota 
 
 SARB_rgi_result <- SARB_rgi_result %>% left_join(antibiotics_abun_taxo, by=c('Run','Bin'))
-
 
 
 ## SARB vs AMR gene circos plot ##
@@ -579,7 +581,7 @@ names(named_vector)[9:85] <- rownames(final_result_matrix)
 circos.clear()
 
 
-# Find rows where the count of zeros is <= 2
+# Find rows where the count of zeros is <= 2 (Meaning present more than 6 phyla)
 rows_with_less_or_equal_two_zero <- apply(final_result_matrix, 1, function(row) sum(row == 0) <= 2)
 
 # Create a color matrix with default colors (e.g., "white" for no highlight)
@@ -1019,7 +1021,7 @@ rm(list=ls())
 #####         FIGURE 4           #####
 ######################################
 
-#### (fig4-a) significant 한 pathway 찾아보기 ####
+#### (fig4-a) significant pathway ####
 
 setwd("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/fig5_pathway_module_analysis/")
 
@@ -1138,7 +1140,7 @@ ggbarplot(sig_result, x = "Pathway", y = "log2fold",
 
 rm(list=ls())
 
-#### (fig4-b) significant 한 module 찾아보기 ####
+#### (fig4-b) significant module ####
 
 setwd("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/fig5_pathway_module_analysis/")
 
@@ -1291,7 +1293,7 @@ rownames(ANI_matrix) <- gsub('D8.1','D8',rownames(ANI_matrix))
 
 pheatmap(ANI_matrix,display_numbers = F, cluster_cols = F, cluster_rows = F, fontsize = 6, main = "intra-species ANI matrix")
 
-# Do not remove environments this time.
+# Do not remove environments this time. #
 
 #### (fig5-b) Top 5 ANI score of 23, 24 / 47, 48 ####
 
@@ -1569,13 +1571,13 @@ table(result$condition) # major: 75 / minor: 76 / one allele: 333
 ### median depth ###
 one_allele_list <- result %>% filter(condition=='major') %>% pull(position) 
 
-# position_depths 계산
+# position_depths
 position_depths <- sapply(one_allele_list, function(pos) sum(H5_D0_AMR[[as.character(pos)]]))
 
-# 중앙값 계산
+# median depth
 median_depth <- median(position_depths)
 print(paste("Median position depth:", median_depth))
-# 기본 통계 확인
+# basic statistics
 summary(position_depths)
 
 ### ###
@@ -2066,11 +2068,12 @@ final_result <- final_result %>% left_join(infant_metadata,by=c('Run','Bin'))
 final_result$host_day_of_life <- factor(final_result$host_day_of_life, levels = day_of_life)
 final_result <- final_result %>% arrange(host_day_of_life)
 
-ggboxplot(final_result, x="Run",y="score", fill = "Run", legend = 'none', size = 0.1, outlier.size = 0.6, ylab = 'Community power score') +
+ggboxplot(final_result, x="Run",y="score", fill = "Run", legend = 'none', size = 0.1, outlier.size = 0.6, ylab = 'Community power score', xlab='Sample') +
   rotate_x_text(angle=45) +
   ggtitle("Community power analysis (Preterm infant)") +
-  rremove('xlab')+
+  #rremove('xlab')+
   rremove('x.text')+
+  font("xlab",size=6)+
   font("ylab", size = 6)+
   # font("xy.text", size = 6)+
   font('y.text',size=6)+
@@ -2079,18 +2082,6 @@ ggboxplot(final_result, x="Run",y="score", fill = "Run", legend = 'none', size =
   font("title", size = 6, face = "bold") +
   theme(legend.key.size = unit(0.3, 'cm')) +
   geom_point(data = infant_EARB_score, size=0.6, color='red')
-
-
-# ggboxplot(final_result, x="multi_amr",y="score", fill = "multi_amr", ylab = 'Community power score', legend='none', ylim =c(0,1500), size = 0.1, outlier.size=0.6, xlab = 'Multi AMR') +
-#   stat_compare_means(label= "p.signif", method = "t.test", ref.group = "no", comparisons = list(c("yes","no")), label.y = 1350, vjust = 0, size=3,) +
-#   # stat_compare_means(label = "p.signif", method = "t.test") +
-#   font("xlab", size = 6)+
-#   font("ylab", size = 6)+
-#   font("xy.text", size = 6)+
-#   font("legend.title", size = 6)+
-#   font("legend.text",size = 6) +
-#   font("title", size = 6, face = "bold") +
-#   theme(legend.key.size = unit(0.3, 'cm'))
 
 rm(list=ls())
 
@@ -2178,17 +2169,6 @@ ggboxplot(final_result, x="Run",y="score", fill = "Run", legend = 'none', size =
   theme(legend.key.size = unit(0.3, 'cm')) +
   geom_point(data = liver_EARB_score, size=0.6, color='red')
 
-# ggboxplot(final_result, x="multi_amr",y="score", fill = "multi_amr", ylab = 'community power score', legend='none', ylim=c(0,1500), size = 0.1, outlier.size=0.6, xlab='Multi AMR') +
-#   stat_compare_means(label= "p.signif", method = "t.test", ref.group = "no", comparisons = list(c("yes","no")), label.y = 1300, vjust = -0.5, size=3) +
-#   # stat_compare_means(label = "p.signif", method = "t.test", label.y = 1100) +
-#   font("xlab", size = 6)+
-#   font("ylab", size = 6)+
-#   font("xy.text", size = 6)+
-#   font("legend.title", size = 6)+
-#   font("legend.text",size = 6) +
-#   font("title", size = 6, face = "bold") +
-#   theme(legend.key.size = unit(0.3, 'cm'))
-
 rm(list=ls())
 
 #### (fig6-c) pie chart (Hard coding) ####
@@ -2208,7 +2188,7 @@ my_labeller <- function(variable_value){
   gsub(" \\(", "\n(", variable_value)
 }
 
-# ggplot으로 파이 차트 생성
+# Generate pie chart using ggplot
 ggplot(piechart, aes(x="", y=relative_abundance, fill=Type)) + 
   scale_fill_npg() +
   geom_bar(width = 1, stat = "identity", color="white") +
@@ -2229,7 +2209,7 @@ ggplot(piechart, aes(x="", y=relative_abundance, fill=Type)) +
 
 rm(list=ls())
 
-# 어도비에서 E.coli 바꿔!
+# Change E. coli for italic style in adobe!
 
 
 
@@ -2265,7 +2245,7 @@ all_abundance <- all_abundance %>% mutate(phylum=ifelse(top=="others","others",p
 
 all_abundance$phylum <- gsub('p__','',all_abundance$phylum)
 
-# Generating figure 2b
+# Generating figure 1b
 ggbarplot(all_abundance, x = "condition", y = "relative_abundance",
           fill = 'phylum', color = "phylum", legend = c('right'), ylab = 'Relative abundance',
           palette = get_palette('npg',11)) +
@@ -2304,7 +2284,7 @@ all_abundance <- all_abundance %>% mutate(family=ifelse(family=="f__Veillonellac
 all_abundance$family <- gsub('f__','',all_abundance$family)
 all_abundance$family <- factor(all_abundance$family, levels = c('Enterobacteriaceae','Veillonellaceae','others'))
 
-# Generating figure 2c
+# Generating figure 1c
 ggbarplot(all_abundance, x = "condition", y = "relative_abundance",
           fill = 'family', color = "family", legend = "top", ylab = 'Relative abundance',
           palette = get_palette('npg', 3)) +
@@ -2366,21 +2346,21 @@ abundance_EARB_sample_top5 <- abundance_EARB_sample_top5 %>% group_by(Run,Day) %
 # select EARB existed sample only (If you skip this, you can get a graph with all 57 samples)
 abundance_EARB_sample_top5 <- abundance_EARB_sample_top5 %>% filter(Run %in% c(EARB_count$Run))
 
-# Generating figure 2d
+# Generating figure 1d
 ggbarplot(abundance_EARB_sample_top5, x = "Run", y = "relative_abundance",
           fill = 'top5', color = "top5", legend = c('right'),
           palette = get_palette('npg',3), ylab = 'Relative abundance', legend.title="condition") +
   rremove('y.text') +
   rremove('ylab') +
-  font("xlab", size = 6)+
-  font('x.text', size =6) +
-  font("legend.title", size = 6)+
-  font("legend.text",size = 6) +
+  font("xlab", size = 6) +
+  font('x.text', size = 6) +
+  font("legend.title", size = 6) +
+  font("legend.text", size = 6) +
   font("title", size = 6, face = "bold") +
   theme(legend.key.size = unit(0.3, 'cm')) +
   guides(color = guide_legend(title.position = "top", 
                               title.hjust = 0.5)) +
-  rotate()
+  coord_flip()
 
 rm(list=ls())
 
@@ -2518,7 +2498,7 @@ distances <- tmp %>%
                           (Y[Condition == "D180"] - Y[Condition == "D0"])^2))
   ) %>% arrange(desc(Distance))
 
-# 결과 출력
+# print distance between day0 and day180
 print(distances)
 
 connections <- tmp %>% 
@@ -2707,7 +2687,7 @@ ggbarplot(all_abundance, x = "condition", y = "relative_abundance",
                               title.hjust = 0.5))
 
 rm(list=ls())
-#### (Sub fig3-d) top5 day 별로 ####
+#### (Sub fig3-d) Top5, EARB, others by conditions ####
 
 load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_abundance_taxo.Rdata") # load name: antibiotics_abun_taxo
 load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_metadata.Rdata")
@@ -2754,7 +2734,7 @@ test <- test %>% ungroup() %>% group_by(Day, top5) %>% mutate(sum = sum(relative
 
 test <- test %>% ungroup() %>% group_by(Day) %>% mutate(total_day_sum=sum(sum)) %>% mutate(relative_abundance = sum / total_day_sum) %>% select(-total_day_sum)
 
-# Generating figure 3d
+# Generating figure 
 ggbarplot(test, x = "Day", y = "relative_abundance",
           fill = 'top5', color = "top5", legend = c('right'),
           palette = get_palette('npg',3), ylab = 'Relative abundance', legend.title="condition") +
@@ -2769,7 +2749,7 @@ ggbarplot(test, x = "Day", y = "relative_abundance",
   theme(legend.key.size = unit(0.3, 'cm')) +
   guides(color = guide_legend(title.position = "top", 
                               title.hjust = 0.5)) +
-  rotate()
+  coord_flip()
 
 rm(list=ls())
 
@@ -2820,7 +2800,7 @@ SARB_w_amr <- n_bin_n_amr %>% filter(AMR>0 & AMR<17) # 479
 merged_drug_class <- merged_drug_class %>% left_join(antibiotics_abun_taxo, by=c("Run","Bin")) # all include
 merged_drug_class <- merged_drug_class %>% inner_join(SARB_w_amr %>% select(-AMR), by=c("Run","Bin")) # only SARB with amr gene
 
-phylum_count <- merged_drug_class %>% select(c("Run","Bin", "phylum")) %>% unique()  %>% group_by(phylum) %>% summarise(n=n()) # phylum 등장 횟수
+phylum_count <- merged_drug_class %>% select(c("Run","Bin", "phylum")) %>% unique()  %>% group_by(phylum) %>% summarise(n=n()) # occurrence count phylum 
 
 test <- merged_drug_class %>% select(c("total_drugclass","Drug_Class","phylum")) %>% left_join(phylum_count, by='phylum')
 
@@ -2896,7 +2876,7 @@ EARB_w_amr <- n_bin_n_amr %>% filter(AMR>16) # 20
 merged_drug_class <- merged_drug_class %>% left_join(antibiotics_abun_taxo, by=c("Run","Bin")) # all include
 merged_drug_class <- merged_drug_class %>% inner_join(EARB_w_amr %>% select(-AMR), by=c("Run","Bin")) # only EARB with amr gene
 
-specie_count <- merged_drug_class %>% select(c("Run","Bin", "specie")) %>% unique()  %>% group_by(specie) %>% summarise(n=n()) # specie 등장 횟수
+specie_count <- merged_drug_class %>% select(c("Run","Bin", "specie")) %>% unique()  %>% group_by(specie) %>% summarise(n=n()) # occurrence count specie
 
 test <- merged_drug_class %>% select(c("total_drugclass","Drug_Class","specie")) %>% left_join(specie_count, by='specie')
 
@@ -2925,7 +2905,7 @@ pheatmap(wide_data, fontsize = 6)
 
 rm(list=ls())
 
-#### (Sub fig5-a) resistome 기준 clustering ####
+#### (Sub fig5-a) k-mean cluster based on resistome ####
 
 load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_abundance_taxo.Rdata")
 load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_rgi_result.Rdata")
@@ -2968,7 +2948,7 @@ test <- test %>% left_join(antibiotics_abun_taxo, by=c('Run','Bin'))
 
 final_result <- test %>% select(Run, Bin, Drug_Class, total_drugclass, EARB, specie)
 
-specie_count <- final_result %>% select(c("Run","Bin", "specie")) %>% unique()  %>% group_by(specie) %>% summarise(n=n()) # specie 등장 횟수
+specie_count <- final_result %>% select(c("Run","Bin", "specie")) %>% unique()  %>% group_by(specie) %>% summarise(n=n()) # occurrence count specie
 
 test <- final_result %>% select(c("total_drugclass","Drug_Class","specie")) %>% left_join(specie_count, by='specie')
 
@@ -3008,7 +2988,172 @@ km.res$cluster[km.res$cluster=='EARB']
 
 rm(list=ls())
 
-#### (Sub fig6-a) NMF ####
+#### (Sub fig6-a) SARB drug class and AMR gene sharing in genus level ####
+
+# SARB and amr gene #
+
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_rgi_result.Rdata") #load name: amr_gene_rgi_result; total amr genes = 1635
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/n_bin_n_amr.Rdata") #load name: n_bin_n_amr
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_abundance_taxo.Rdata") # load name: antibiotics_abun_taxo
+
+SARB_list <- n_bin_n_amr %>% filter(AMR<16 & AMR>0) %>% select(Run, Bin) # number of SARB: 479
+
+SARB_rgi_result <- amr_gene_rgi_result %>% select(Run,Bin, Best_Hit_ARO, `Drug Class`, `Resistance Mechanism`) %>% inner_join(SARB_list, by=c('Run','Bin')) # 832 in SARB AMR
+
+antibiotics_abun_taxo <- antibiotics_abun_taxo %>% mutate(phylum=ifelse(str_detect(phylum,"p__Firmicutes"), "p__Firmicutes",phylum)) # Firmicutes subtypes to Firmicutes
+antibiotics_abun_taxo <- antibiotics_abun_taxo %>% mutate(phylum=ifelse(str_detect(phylum,"p__Desulfobacterota"), "p__Desulfobacterota",phylum)) # p__Desulfobacterota_I -> p__Desulfobacterota 
+
+SARB_rgi_result <- SARB_rgi_result %>% left_join(antibiotics_abun_taxo, by=c('Run','Bin'))
+
+
+
+## SARB vs AMR gene circos plot ##
+
+genus_list <- (SARB_rgi_result %>% select(genus) %>% unique())$genus # 92
+amr_gene_list <- (SARB_rgi_result %>% select(Best_Hit_ARO) %>% unique())$Best_Hit_ARO # 77
+
+final_result <- data.frame('amr_name'=amr_gene_list)
+
+for (i in 1:length(genus_list)) {
+  genus_name <- genus_list[i]
+  
+  tmp <- data.frame('amr_name'=character(), 'number'=numeric())
+  for (k in 1:length(amr_gene_list)) {
+    amr_name <- amr_gene_list[k]
+    
+    tmp_number <- SARB_rgi_result %>% filter(genus == genus_name & Best_Hit_ARO == amr_name) %>% nrow()
+    
+    tmp2 <- data.frame('amr_name' = amr_name, 'number' = tmp_number)
+    
+    tmp <- rbind(tmp,tmp2)
+  }
+  tmp <- tmp %>% rename(!!genus_name := number)
+  final_result <- cbind(final_result, tmp %>% select(!!genus_name))
+}
+
+rownames(final_result) <- final_result$amr_name
+final_result <- final_result[,-1]
+final_result_matrix <- as.matrix(final_result)
+
+#npg_colors <- c("#009E73", "#D55E00", "#0072B2", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7")
+
+named_vector <- character(169)
+
+named_vector[1:92] <- '#009E73'
+nrow(final_result_matrix)
+named_vector[93:169] <- 'grey'
+
+names(named_vector)[1:92] <- colnames(final_result_matrix)
+names(named_vector)[93:169] <- rownames(final_result_matrix)
+
+circos.clear()
+
+
+# Find rows where the count of zeros is <= 2 (Meaning present more than 6 phyla)
+rows_with_less_or_equal_two_zero <- apply(final_result_matrix, 1, function(row) sum(row != 0) >= 3)
+
+# Create a color matrix with default colors (e.g., "white" for no highlight)
+color_matrix <- matrix("blue", nrow = nrow(final_result_matrix), ncol = ncol(final_result_matrix))
+
+# Fill in your highlight color for rows with 0 count <= 1
+color_matrix[rows_with_less_or_equal_two_zero, ] <- "red"
+
+# Generate the chord diagram
+chordDiagram(final_result_matrix, col = color_matrix , grid.col = named_vector, annotationTrack = c('grid'))
+
+table(rows_with_less_or_equal_two_zero)
+
+circos.clear()
+
+## SARB vs Drug class ##
+
+SARB_drugclass_rgi_result <- SARB_rgi_result %>% select(genus,`Drug Class`) %>% mutate(`Drug Class` = str_replace_all(`Drug Class`, "; ", "\n")) # select drug class
+
+# Create an empty data frame with the columns
+SARB_drugclass <- tibble(genus = character(), Drug_Class = character())
+
+# Loop over each row in 'test' data frame
+for (i in 1:nrow(SARB_drugclass_rgi_result)) {
+  
+  # Split the 'Drug Class' column into individual drugs
+  drug_classes <- unlist(strsplit(as.character(SARB_drugclass_rgi_result$`Drug Class`[i]), "\n"))
+  
+  # Loop over each drug_class
+  for (drug_class in drug_classes) {
+    
+    # Create a new row as a tibble
+    new_row <- tibble(genus = SARB_drugclass_rgi_result$genus[i], Drug_Class = drug_class)
+    
+    # Add the new row to the output data frame
+    SARB_drugclass <- bind_rows(SARB_drugclass, new_row)
+  }
+}
+
+genus_list <- (SARB_rgi_result %>% select(genus) %>% unique())$genus # 92
+drugclass_list <- (SARB_drugclass %>% select(Drug_Class) %>% unique())$Drug_Class # 26
+
+final_result <- data.frame('Drug_Class'=drugclass_list)
+
+for (i in 1:length(genus_list)) {
+  genus_name <- genus_list[i]
+  
+  tmp <- data.frame('Drug_Class'=character(), 'number'=numeric())
+  for (k in 1:length(drugclass_list)) {
+    drugclass_name <- drugclass_list[k]
+    
+    tmp_number <- SARB_drugclass %>% filter(genus == genus_name & Drug_Class == drugclass_name) %>% nrow()
+    
+    tmp2 <- data.frame('Drug_Class' = amr_name, 'number' = tmp_number)
+    
+    tmp <- rbind(tmp,tmp2)
+  }
+  tmp <- tmp %>% rename(!!genus_name := number)
+  final_result <- cbind(final_result, tmp %>% select(!!genus_name))
+}
+
+rownames(final_result) <- final_result$Drug_Class
+final_result <- final_result[,-1]
+final_result_matrix <- as.matrix(final_result)
+
+#npg_colors <- c("#009E73", "#D55E00", "#0072B2", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7")
+
+named_vector <- character(118)
+
+named_vector[1:92] <- "#009E73"
+nrow(final_result_matrix)
+named_vector[93:118] <- 'grey'
+
+names(named_vector)[1:92] <- colnames(final_result_matrix)
+names(named_vector)[93:118] <- rownames(final_result_matrix)
+
+circos.clear()
+
+# Find rows where the count of zeros is <= 2
+rows_with_less_or_equal_two_zero <- apply(final_result_matrix, 1, function(row) sum(row != 0) >= 3)
+
+# Create a color matrix with default colors (e.g., "white" for no highlight)
+color_matrix <- matrix("blue", nrow = nrow(final_result_matrix), ncol = ncol(final_result_matrix))
+
+# Fill in your highlight color for rows with 0 count <= 1
+color_matrix[rows_with_less_or_equal_two_zero, ] <- "red"
+
+# Generate the chord diagram
+chordDiagram(final_result_matrix, col = color_matrix , grid.col = named_vector, annotationTrack = c('grid'))
+
+table(rows_with_less_or_equal_two_zero)
+
+circos.clear()
+plot(1, 1, type="n", xlab="", ylab="", xlim=c(0, 2), ylim=c(0, 2), xaxt='n', yaxt='n')
+legend("center", legend=gsub(pattern = 'p__',replacement = '',phylum_list), fill=npg_colors, cex = 0.8)
+legend("bottom", legend = c(expression(phyla >= 6), expression(phyla < 6)), col = c("red", "blue"), lty = 1, cex = 0.8, inset=c(0, 0.03))
+
+title('SARB drugclass / SARB AMR gene sharing', cex.main=0.6)
+
+circos.clear()
+
+rm(list=ls())
+
+#### (Sub fig7-a,b) NMF ####
 setwd('/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/')
 
 metadataRData = "antibiotic_metadata.Rdata"
@@ -3019,7 +3164,6 @@ geneCountTab = read.delim(geneCountFile)
 geneCountMat = geneCountTab[,-1]
 rownames(geneCountMat) = geneCountTab[,1]
 
-require(NMF)
 nmfSeed("nn")
 ranks = 2
 
@@ -3046,6 +3190,19 @@ coef_rank2_melt$day <- factor(coef_rank2_melt$day, levels = c('D0','D4','D8','D4
 coef_rank2_melt$Subject <- factor(coef_rank2_melt$Subject, 
                                   levels = paste("H", 1:12, sep=""))
 
+ggbarplot(basis_rank2_melt, x='Var1', y='value', group='Var2', fill='Var2', palette = 'npg', legend = 'right', size = 0.1) +
+  theme(axis.text.x = element_text(angle = 70, hjust = 1)) +
+  facet_grid(~ Var2) +
+  font("xlab", size = 6) +
+  font("x.text", size = 6) +
+  font("ylab", size = 6)+
+  font("y.text", size = 6)+
+  font("legend.title", size = 6)+
+  font("legend.text",size = 6)+
+  theme(legend.key.size = unit(0.3, 'cm')) +
+  theme(strip.text.x = element_text(size = 6)) +
+  labs(fill = 'coef rank')
+
 ggbarplot(data=coef_rank2_melt, x='Subject', y='value', ylab = 'NMF value',  fill = "Var1", palette = "npg", legend = 'bottom', size = 0.1) +
   theme(axis.text.x = element_text(angle = 70, hjust = 1)) +
   facet_grid(~ day)+
@@ -3059,9 +3216,364 @@ ggbarplot(data=coef_rank2_melt, x='Subject', y='value', ylab = 'NMF value',  fil
   theme(strip.text.x = element_text(size = 6)) +
   labs(fill = 'coef rank')
 
+
+
 rm(list=ls())
 
-#### (Sub fig7-a) EARB heatmap ####
+#### (Sub fig8-a) CAZyme analysis ####
+
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_abundance_taxo.Rdata") # load name: antibiotics_abun_taxo
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_metadata.Rdata")
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/n_bin_n_amr.Rdata") # load name: n_bin_n_amr
+
+antibiotics_abundance <- antibiotics_abun_taxo %>% select("Run","Bin","abundance","multi_amr")
+antibiotics_abundance <- antibiotics_abundance %>% left_join(n_bin_n_amr, by=c('Run','Bin'))
+antibiotics_abundance <- antibiotics_abundance %>% mutate(multi_amr=ifelse(AMR>16, 'EARB', ifelse(AMR>0,'SARB','Non-carrier'))) %>% mutate(condition = paste(Run,Bin, sep = '_'))
+
+# Select necessary columns
+annotation_col <- antibiotics_abundance[, c("condition", "multi_amr")]
+
+# Convert annotation_col to a data.frame
+annotation_col <- as.data.frame(annotation_col)
+
+# Set row names to 'condition'
+rownames(annotation_col) <- annotation_col$condition
+
+# Remove unnecessary 'condition' column
+annotation_col$condition <- NULL
+
+# Check the data
+head(annotation_col)
+
+# Read the CSV file
+df <- fread('/Users/jwbaek9506/Documents/antibiotic_project_paper/data_for_figure/antibiotic/prodigal_result/dbcan_result/hmm_profile_counts.csv', header=TRUE, data.table=FALSE)
+
+# Set the first column as row names
+rownames(df) <- df$V1  # V1 is the name of the first column (depends on the CSV file)
+df$V1 <- NULL          # Remove the first column
+
+# Check the data
+head(df)
+
+# Convert data to matrix
+data_matrix <- as.matrix(df)
+
+# Sort annotation_col in the order of columns in data_matrix
+annotation_col <- annotation_col[colnames(data_matrix), , drop=FALSE]
+
+pheatmap(data_matrix,display_numbers = F, fontsize = 6, main = "CAZyme analysis", annotation_col = annotation_col, show_rownames = F, show_colnames = F)
+
+# Perform PCA
+pca_result <- prcomp(t(data_matrix), scale = TRUE)
+pca_data <- data.frame(pca_result$x)
+pca_data$multi_amr <- annotation_col$multi_amr
+
+# Visualize PCA using ggplot
+library(ggplot2)
+ggplot(pca_data, aes(x = PC1, y = PC2, color = multi_amr)) +
+  theme_minimal() +
+  font("title", size = 10)+
+  geom_point(size = 0.5) +
+  font('xlab', size=6) +
+  font('xy.text', size=6) +
+  font('ylab', size=6)+
+  font("legend.title", size = 6)+
+  font("legend.text",size = 6)+
+  theme(legend.key.size = unit(0.3, 'cm')) +
+  stat_ellipse(type = "t") +  # Add ellipses (t-distribution)
+  labs(title = "PCA of CAZyme Profiles", x = "PC1", y = "PC2", color = "Condition") +
+  scale_color_manual(values = c("EARB" = "forestgreen", "SARB" = "dodgerblue", "Non-carrier" = "tomato"))
+
+#### (Sub fig8-c) KEGG analysis ####
+
+kegg_gene_profile <- fread('/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/fig4_CPA_keggresults/kegg_gene_presence_absence.csv') %>%
+  as.data.frame()
+
+# Set the first column as row names
+rownames(kegg_gene_profile) <- kegg_gene_profile$V1  # V1 is the name of the first column (may vary depending on the CSV file)
+kegg_gene_profile$V1 <- NULL          # Remove the first column
+
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_abundance_taxo.Rdata") # load name: antibiotics_abun_taxo
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_metadata.Rdata")
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/n_bin_n_amr.Rdata") # load name: n_bin_n_amr
+
+antibiotics_abundance <- antibiotics_abun_taxo %>% select("Run","Bin","abundance","multi_amr")
+antibiotics_abundance <- antibiotics_abundance %>% left_join(n_bin_n_amr, by=c('Run','Bin'))
+antibiotics_abundance <- antibiotics_abundance %>% mutate(multi_amr=ifelse(AMR>16, 'EARB', ifelse(AMR>0,'SARB','Non-carrier'))) %>% mutate(condition = paste(Run,Bin, sep = '_'))
+
+# Select required columns
+annotation_col <- antibiotics_abundance[, c("condition", "multi_amr")]
+
+# Convert annotation_col to data.frame
+annotation_col <- as.data.frame(annotation_col)
+
+# Set row names to 'condition'
+rownames(annotation_col) <- annotation_col$condition
+
+# Remove unnecessary 'condition' column
+annotation_col$condition <- NULL
+
+# Convert to data matrix
+data_matrix <- as.matrix(kegg_gene_profile)
+
+# Arrange annotation_col to match the column order of data_matrix
+annotation_col <- annotation_col[colnames(data_matrix), , drop=FALSE]
+
+# Perform PCA
+pca_result <- prcomp(t(data_matrix))
+pca_data <- data.frame(pca_result$x)
+pca_data$multi_amr <- annotation_col$multi_amr
+
+# Plotting PCA
+ggplot(pca_data, aes(x = PC1, y = PC2, color = multi_amr)) +
+  theme_minimal() +
+  font("title", size = 10)+
+  geom_point(size = 0.5) +
+  font('xlab', size=6) +
+  font('xy.text', size=6) +
+  font('ylab', size=6)+
+  font("legend.title", size = 6)+
+  font("legend.text",size = 6)+
+  theme(legend.key.size = unit(0.3, 'cm')) +
+  stat_ellipse(type = "t") +  # Add ellipse (t-distribution)
+  labs(title = "PCA of KEGG Profiles", x = "PC1", y = "PC2", color = "Condition") +
+  scale_color_manual(values = c("EARB" = "forestgreen", "SARB" = "dodgerblue", "Non-carrier" = "tomato"))
+
+#### (Sub fig8-b) CAZyme vennDiagram ####
+
+# Load necessary library
+library(VennDiagram)
+
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_abundance_taxo.Rdata") # load name: antibiotics_abun_taxo
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_metadata.Rdata")
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/n_bin_n_amr.Rdata") #load name: n_bin_n_amr
+
+antibiotics_abundance <- antibiotics_abun_taxo %>% select("Run","Bin","abundance","multi_amr")
+antibiotics_abundance <- antibiotics_abundance %>% left_join(n_bin_n_amr, by=c('Run','Bin'))
+antibiotics_abundance <- antibiotics_abundance %>% mutate(multi_amr=ifelse(AMR>16, 'EARB', ifelse(AMR>0,'SARB','Non-carrier'))) %>% mutate(condition = paste(Run,Bin, sep = '_'))
+
+# Select necessary columns
+annotation_col <- antibiotics_abundance[, c("condition", "multi_amr")]
+
+# Convert annotation_col to a data.frame
+annotation_col <- as.data.frame(annotation_col)
+
+# Set row names to 'condition'
+rownames(annotation_col) <- annotation_col$condition
+
+# Remove unnecessary 'condition' column
+annotation_col$condition <- NULL
+
+# Check the data
+head(annotation_col)
+
+# Read the CSV file
+df <- fread('/Users/jwbaek9506/Documents/antibiotic_project_paper/data_for_figure/antibiotic/prodigal_result/dbcan_result/hmm_profile_counts.csv', header=TRUE, data.table=FALSE)
+
+# Set the first column as row names
+rownames(df) <- df$V1  # V1 is the name of the first column (depends on the CSV file)
+df$V1 <- NULL          # Remove the first column
+
+df <- as.data.frame(t(df))
+df$sample <- rownames(df)
+
+annotation_col$sample <- rownames(annotation_col)
+#annotation_col <- as.data.frame(annotation_col)
+
+df <- df %>% left_join(annotation_col, by='sample') %>% select(-sample)
+
+# Step 1: Prepare your data
+# Get the list of gene columns (excluding 'multi_amr')
+genes <- setdiff(colnames(df), 'multi_amr')
+
+# Get the unique groups
+groups <- unique(df$multi_amr)
+
+# Step 2: Categorize each gene
+# Initialize a data frame to store gene categories
+gene_categories <- data.frame(Gene = genes, Category = NA, stringsAsFactors = FALSE)
+
+# Loop over each gene to determine its category
+for (i in seq_along(genes)) {
+  gene <- genes[i]
+  present_in_groups <- c()
+  
+  # Check presence in each group
+  for (group in groups) {
+    group_rows <- df[df$multi_amr == group, ]
+    if (any(group_rows[[gene]] > 0, na.rm = TRUE)) {
+      # Use the first letter of the group as an abbreviation
+      abbrev <- substr(group, 1, 1)
+      present_in_groups <- c(present_in_groups, abbrev)
+    }
+  }
+  
+  # Sort and concatenate the abbreviations to form the category
+  category <- paste(sort(unique(present_in_groups)), collapse = "")
+  gene_categories$Category[i] <- category
+}
+
+# Step 3: Save the categorization as a data frame
+# The 'gene_categories' data frame now contains the genes and their categories
+print(gene_categories)
+
+# Step 4: Plot a Venn diagram
+# Create a list of genes for each group
+gene_list <- list()
+
+for (group in groups) {
+  group_rows <- df[df$multi_amr == group, ]
+  genes_in_group <- genes[colSums(group_rows[genes] > 0, na.rm = TRUE) > 0]
+  gene_list[[group]] <- genes_in_group
+}
+
+# Plot the Venn diagram with adjusted label positioning
+venn.plot <- venn.diagram(
+  x = gene_list,
+  filename = NULL,
+  category.names = groups,
+  output = TRUE,
+  imagetype = "pdf",
+  height = 600,
+  width = 600,
+  resolution = 300,
+  lwd = 2,
+  lty = 'blank',
+  fill = c("dodgerblue", "tomato", "forestgreen"),
+  alpha = 0.5,
+  cex = 0.6,
+  fontface = "bold",
+  cat.cex = 0.6,
+  cat.fontface = "bold",
+  cat.pos = c(-30, 30, 180), # Move labels further outside
+  cat.dist = c(0.1, 0.1, 0.1), # Increase distance from circles
+  cat.just = list(c(0.5, 3), c(0.5, 3), c(0.5, -2)) # Align labels outside
+)
+
+# Draw the Venn diagram
+grid.newpage()
+grid.draw(venn.plot)
+# Add a title to the Venn diagram
+grid.text("CAZyme", x = 0.5, y = 0.95, gp = gpar(fontsize = 10, fontface = "bold"))
+
+#write.table(gene_categories, file="/users/jwbaek9506/Documents/analysis/EARB_project/revision/CAZyme_category.tsv", quote = F, sep='\t', row.names = F)
+
+rm(list=ls())
+
+#### (Sub fig8-d) KEGG vennDiagram ####
+
+kegg_gene_profile <- fread('/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/fig4_CPA_keggresults/kegg_gene_presence_absence.csv') %>%
+  as.data.frame()
+
+# Set the first column as row names
+rownames(kegg_gene_profile) <- kegg_gene_profile$V1  # V1 is the name of the first column (may vary depending on the CSV file)
+kegg_gene_profile$V1 <- NULL          # Remove the first column
+
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_abundance_taxo.Rdata") # load name: antibiotics_abun_taxo
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/antibiotics_metadata.Rdata")
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/n_bin_n_amr.Rdata") #load name: n_bin_n_amr
+
+antibiotics_abundance <- antibiotics_abun_taxo %>% select("Run","Bin","abundance","multi_amr")
+antibiotics_abundance <- antibiotics_abundance %>% left_join(n_bin_n_amr, by=c('Run','Bin'))
+antibiotics_abundance <- antibiotics_abundance %>% mutate(multi_amr=ifelse(AMR>16, 'EARB', ifelse(AMR>0,'SARB','Non-carrier'))) %>% mutate(condition = paste(Run,Bin, sep = '_'))
+
+# Select required columns
+annotation_col <- antibiotics_abundance[, c("condition", "multi_amr")]
+
+# Convert annotation_col to data.frame
+annotation_col <- as.data.frame(annotation_col)
+
+# Set row names to 'condition'
+rownames(annotation_col) <- annotation_col$condition
+
+# Remove unnecessary 'condition' column
+annotation_col$condition <- NULL
+
+kegg_gene_profile <- as.data.frame(t(kegg_gene_profile))
+kegg_gene_profile$sample <- rownames(kegg_gene_profile)
+
+annotation_col$sample <- rownames(annotation_col)
+#annotation_col <- as.data.frame(annotation_col)
+
+kegg_gene_profile <- kegg_gene_profile %>% left_join(annotation_col, by='sample') %>% select(-sample)
+
+# Step 1: Prepare your data
+# Get the list of gene columns (excluding 'multi_amr')
+genes <- setdiff(colnames(kegg_gene_profile), 'multi_amr')
+
+# Get the unique groups
+groups <- unique(kegg_gene_profile$multi_amr)
+
+# Step 2: Categorize each gene
+# Initialize a data frame to store gene categories
+gene_categories <- data.frame(Gene = genes, Category = NA, stringsAsFactors = FALSE)
+
+# Loop over each gene to determine its category
+for (i in seq_along(genes)) {
+  gene <- genes[i]
+  present_in_groups <- c()
+  
+  # Check presence in each group
+  for (group in groups) {
+    group_rows <- kegg_gene_profile[kegg_gene_profile$multi_amr == group, ]
+    if (any(group_rows[[gene]] > 0, na.rm = TRUE)) {
+      # Use the first letter of the group as an abbreviation
+      abbrev <- substr(group, 1, 1)
+      present_in_groups <- c(present_in_groups, abbrev)
+    }
+  }
+  
+  # Sort and concatenate the abbreviations to form the category
+  category <- paste(sort(unique(present_in_groups)), collapse = "")
+  gene_categories$Category[i] <- category
+}
+
+# Step 3: Save the categorization as a data frame
+# The 'gene_categories' data frame now contains the genes and their categories
+print(gene_categories)
+
+# Step 4: Plot a Venn diagram
+# Create a list of genes for each group
+gene_list <- list()
+
+for (group in groups) {
+  group_rows <- kegg_gene_profile[kegg_gene_profile$multi_amr == group, ]
+  genes_in_group <- genes[colSums(group_rows[genes] > 0, na.rm = TRUE) > 0]
+  gene_list[[group]] <- genes_in_group
+}
+
+# Plot the Venn diagram with adjusted label positioning
+venn.plot <- venn.diagram(
+  x = gene_list,
+  filename = NULL,
+  category.names = groups,
+  output = TRUE,
+  imagetype = "pdf",
+  height = 600,
+  width = 600,
+  resolution = 300,
+  lwd = 2,
+  lty = 'blank',
+  fill = c("dodgerblue", "tomato", "forestgreen"),
+  alpha = 0.5,
+  cex = 0.6,
+  fontface = "bold",
+  cat.cex = 0.6,
+  cat.fontface = "bold",
+  cat.pos = c(-30, 30, 180), # Move labels further outside
+  cat.dist = c(0.1, 0.1, 0.1), # Increase distance from circles
+  cat.just = list(c(0.5, 3), c(0.5, 3), c(0.5, -2)) # Align labels outside
+)
+
+# Draw the Venn diagram
+grid.newpage()
+grid.draw(venn.plot)
+grid.text("KEGG", x = 0.5, y = 0.95, gp = gpar(fontsize = 10, fontface = "bold"))
+
+#write.table(gene_categories, file="/users/jwbaek9506/Documents/analysis/EARB_project/revision/KEGG_category.tsv", quote = F, sep='\t', row.names = F)
+
+rm(list=ls())
+#### (Sub fig9-a) EARB heatmap ####
 
 load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/ANI_matrix.Rdata") #load name: ANI_matrix
 
@@ -3072,7 +3584,7 @@ pheatmap(ANI_matrix,display_numbers = F, fontsize = 6, main = "inter-species ANI
 
 # Don't remove environment #
 
-#### (Sub fig7-b) EARB E.coli ANI score compair with H5, H8 ####
+#### (Sub fig9-b) EARB E.coli ANI score compair with H5, H8 ####
 
 E.coli_list <- ANI_matrix %>% select(`H7 D8.1`) %>% filter(`H7 D8.1`>95) %>% rownames()
 
@@ -3086,14 +3598,14 @@ rownames(ANI_matrix) <- gsub('D8.1','D8',rownames(ANI_matrix))
 
 ANI_compare <- as.data.frame(ANI_matrix) %>% select(c("H12 D4", "H12 D8","H5 D4","H5 D8"))
 
-# 행 이름을 열로 변환
+# Convert row names to a column
 ANI_compare$Sample <- rownames(ANI_compare)
 
-# melt 함수 적용
+# Apply melt function
 melted_data <- melt(ANI_compare, id.vars = "Sample", measure.vars = c("H12 D4", "H12 D8"))
 
 melted_data <- melted_data %>%
-  mutate(HOST_ID = as.numeric(sub("H([0-9]+).*", "\\1", Sample))) %>%
+  mutate(HOST_ID = as.numeric(sub("H([0-9]+).*", "\1", Sample))) %>%
   arrange(HOST_ID) %>%
   select(-HOST_ID)
 
@@ -3104,7 +3616,7 @@ ggbarplot(melted_data, x = 'Sample', y = 'value', fill = 'variable',
           palette = get_palette(palette = 'npg',4), 
           ylab = 'ANI score', 
           ylim = c(96, 100)) +
-  theme(strip.text.x = element_text(size = 6))+
+  theme(strip.text.x = element_text(size = 6))+ 
   font("xy.text", size = 6) +
   font("legend.title", size = 6) +
   font("legend.text", size = 6) +
@@ -3115,12 +3627,11 @@ ggbarplot(melted_data, x = 'Sample', y = 'value', fill = 'variable',
        x = bquote("EARB " * italic("E. coli") * " strains"))
 
 
-
-# melt 함수 적용
+# Apply melt function
 melted_data <- melt(ANI_compare, id.vars = "Sample", measure.vars = c("H5 D4", "H5 D8"))
 
 melted_data <- melted_data %>%
-  mutate(HOST_ID = as.numeric(sub("H([0-9]+).*", "\\1", Sample))) %>%
+  mutate(HOST_ID = as.numeric(sub("H([0-9]+).*", "\1", Sample))) %>%
   arrange(HOST_ID) %>%
   select(-HOST_ID)
 
@@ -3131,7 +3642,7 @@ ggbarplot(melted_data, x = 'Sample', y = 'value', fill = 'variable',
           palette = get_palette(palette = 'npg',4), 
           ylab = 'ANI score', 
           ylim = c(96, 100)) +
-  theme(strip.text.x = element_text(size = 6))+
+  theme(strip.text.x = element_text(size = 6))+ 
   font("xy.text", size = 6) +
   font("legend.title", size = 6) +
   font("legend.text", size = 6) +
@@ -3141,55 +3652,284 @@ ggbarplot(melted_data, x = 'Sample', y = 'value', fill = 'variable',
   labs(fill = bquote("Reference EARB " * italic("E. coli") * " strain"),
        x = bquote("EARB " * italic("E. coli") * " strains"))
 
+# Remove all objects from the workspace
 rm(list=ls())
 
-#### (Sub fig7-c) 각 contig의 평균적인 depth가 궁금하군요. (N) ####
+#### (Sub fig9-c) H5 D0 core gene ####
 
-load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/H5_D4_AMR_all_position.Rdata") #load name: H5_D4_AMR_AP
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/sub_analysis/H5_D0_core.Rdata")
 
-H5_D4_AMR_AP <- H5_D4_AMR_AP %>% mutate(across(everything(), ~ ifelse(. < sum(.) * 0.05, 0, .)))
+H5_D0_core <- H5_D0_core %>% mutate(across(everything(), ~ ifelse(. < sum(.) * 0.05, 0, .))) 
 
-colname <- colnames(H5_D4_AMR_AP) # 1841
-modified_colname <- gsub("_[^_]*$", "", colname) %>% unique() # column 이름중에서 position 정보를 지우고 contig의 이름들만 남겼다.
-modified_colname <- modified_colname[-55]
+result <- data.frame(matrix(nrow=0, ncol=5))
 
-result <- data.frame(matrix(nrow=0, ncol=3))
-
-for (name in modified_colname) {
-  test <- H5_D4_AMR_AP %>% select(starts_with(name)) %>% summarise(across(everything(), sum, na.rm = TRUE))
-  column_sums <- colSums(test, na.rm = TRUE)
-  sum_data <- data.frame(column_names = names(column_sums), sum_values = column_sums)
-  sum_data$contig <- name
+for (position in colnames(H5_D0_core)) {
+  position_depth <- sum(H5_D0_core[[position]])
+  nucleotide_freq <- sort(H5_D0_core[[position]], decreasing = T)
   
-  print(name)
-  print(summary(sum_data$sum_values))
+  if (position_depth==0) {
+    print('position_depth is zero')
+    break
+  }
   
-  result <- rbind(result, sum_data)
+  if (nucleotide_freq[1] == 0) {
+    print('major position is zero')
+    break
+  } else if (nucleotide_freq[2] == 0) {
+    print('minor position is zero')
+    
+    temp_result <- data.frame('position'=position, 'SNV_ratio'=nucleotide_freq[1]/position_depth, 'condition'='one allele',
+                              'nucl'=rownames(H5_D0_core)[which(H5_D0_core[[position]] == nucleotide_freq[1])], 'status'='H5 D0')
+    result <- rbind(result, temp_result)
+    next
+  } else {
+    temp_result <- data.frame('position'=position, 'SNV_ratio'=nucleotide_freq[1]/position_depth, 'condition'='major',
+                              'nucl'=rownames(H5_D0_core)[which(H5_D0_core[[position]] == nucleotide_freq[1])], 'status'='H5 D0')
+    result <- rbind(result, temp_result)
+    
+    temp_result <- data.frame('position'=position, 'SNV_ratio'=nucleotide_freq[2]/position_depth, 'condition'='minor', 
+                              'nucl'=rownames(H5_D0_core)[which(H5_D0_core[[position]] == nucleotide_freq[2])], 'status'='H5 D0')
+    result <- rbind(result, temp_result)
+  }
+  
 }
 
-contigs <- c('k113_10194_length_520744_cov_43.6593_402','k113_16363_length_314213_cov_52.9977_282','k113_18543_length_373955_cov_48.0311_3','k113_31323_length_358434_cov_43.9983_245','k113_7590_length_24589_cov_63.5384_4')
+table(result$condition) # major: 43 / minor: 44 / one allele: 258
 
-result$category <- ifelse(result$contig %in% contigs, "SNP not exist","SNP exist")
+result_44_53  <- result
 
-ggplot(result, aes(x = contig, y = sum_values, fill = category)) +
-  geom_boxplot(outlier.size = 0.5) +
-  theme_bw() +
-  scale_fill_manual(values = c("SNP exist" = 'blue', 'SNP not exist'='red'), name = "Contigs") +
-  theme(axis.text.x = element_blank(), 
-        strip.text = element_blank()) +
-  labs(x = "",
-       y = "Sequencing depth", ) +
+# H5_D8 core #
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/H5_D8_core.Rdata")
+
+H5_D8_core <- H5_D8_core %>% mutate(across(everything(), ~ ifelse(. < sum(.) * 0.05, 0, .)))
+
+result <- data.frame(matrix(nrow=0, ncol=5))
+
+for (position in colnames(H5_D8_core)) {
+  position_depth <- sum(H5_D8_core[[position]])
+  nucleotide_freq <- sort(H5_D8_core[[position]], decreasing = T)
+  
+  if (position_depth==0) {
+    print('position_depth is zero')
+    break
+  }
+  
+  if (nucleotide_freq[1] == 0) {
+    print('major position is zero')
+    break
+  } else if (nucleotide_freq[2] == 0) {
+    print('minor position is zero')
+    
+    temp_result <- data.frame('position'=position, 'SNV_ratio'=nucleotide_freq[1]/position_depth, 'condition'='one allele',
+                              'nucl'=rownames(H5_D8_core)[which(H5_D8_core[[position]] == nucleotide_freq[1])], 'status'='H5 D8')
+    result <- rbind(result, temp_result)
+    next
+  } else {
+    temp_result <- data.frame('position'=position, 'SNV_ratio'=nucleotide_freq[1]/position_depth, 'condition'='major',
+                              'nucl'=rownames(H5_D8_core)[which(H5_D8_core[[position]] == nucleotide_freq[1])], 'status'='H5 D8')
+    result <- rbind(result, temp_result)
+    
+    temp_result <- data.frame('position'=position, 'SNV_ratio'=nucleotide_freq[2]/position_depth, 'condition'='minor', 
+                              'nucl'=rownames(H5_D8_core)[which(H5_D8_core[[position]] == nucleotide_freq[2])], 'status'='H5 D8')
+    result <- rbind(result, temp_result)
+  }
+  
+}
+
+table(result$condition) # major 48: 74 / minor 48: 74/ one allele 48: 166
+
+result_48_53  <- result
+
+# H5_D4 core #
+
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/H5_D4_core.Rdata")
+
+H5_D4_core <- H5_D4_core %>% mutate(across(everything(), ~ ifelse(. < sum(.) * 0.05, 0, .))) # 804
+
+result <- data.frame(matrix(nrow=0, ncol=5))
+
+for (position in colnames(H5_D4_core)) {
+  position_depth <- sum(H5_D4_core[[position]])
+  nucleotide_freq <- sort(H5_D4_core[[position]], decreasing = T)
+  
+  if (position_depth==0) {
+    print('position_depth is zero')
+    break
+  }
+  
+  if (nucleotide_freq[1] == 0) {
+    print('major position is zero')
+    break
+  } else if (nucleotide_freq[2] == 0) {
+    print('minor position is zero')
+    
+    temp_result <- data.frame('position'=position, 'SNV_ratio'=nucleotide_freq[1]/position_depth, 'condition'='one allele',
+                              'nucl'=rownames(H5_D4_core)[which(H5_D4_core[[position]] == nucleotide_freq[1])], 'status'='H5 D4')
+    result <- rbind(result, temp_result)
+    next
+  } else {
+    temp_result <- data.frame('position'=position, 'SNV_ratio'=nucleotide_freq[1]/position_depth, 'condition'='major',
+                              'nucl'=rownames(H5_D4_core)[which(H5_D4_core[[position]] == nucleotide_freq[1])], 'status'='H5 D4')
+    result <- rbind(result, temp_result)
+    
+    temp_result <- data.frame('position'=position, 'SNV_ratio'=nucleotide_freq[2]/position_depth, 'condition'='minor',
+                              'nucl'=rownames(H5_D4_core)[which(H5_D4_core[[position]] == nucleotide_freq[2])], 'status'='H5 D4')
+    result <- rbind(result, temp_result)
+  }
+  
+}
+
+table(result$condition) # major 47: 691 / minor 47: 691/ one allele 48: 113
+
+result_47_53  <- result
+
+####
+
+result <- result_47_53 %>% inner_join(result_48_53, by=c('position','nucl'), suffix=c('47_53','48_53'))
+
+temp <- result %>% filter(condition47_53=='major') %>% select(c('SNV_ratio48_53', 'condition48_53'))
+temp$condition <- c("Strain 1 (in D8)")
+colnames(temp) <- c("SNV_ratio","day4_condition","condition")
+
+temp2 <- result %>% filter(condition47_53=='minor') %>% select(c('SNV_ratio48_53', 'condition48_53'))
+temp2$condition <- c("Strain 2 (in D8)")
+colnames(temp2) <- c("SNV_ratio","day4_condition","condition")
+
+
+result <- result_47_53 %>% select(c(SNV_ratio,condition))
+temp <- temp %>% select(c(SNV_ratio,condition))
+temp2 <- temp2 %>% select(c(SNV_ratio,condition))
+
+result <- rbind(result, temp, temp2)
+
+result$condition <- gsub('major', 'Strain 1 (in D4)', result$condition)
+result$condition <- gsub('minor', 'Strain 2 (in D4)', result$condition)
+
+result48 <- result
+
+#### day 0
+
+result <- result_44_53 %>% inner_join(result_47_53, by=c('position','nucl'), suffix=c('44_53','47_53'))
+
+result %>% filter(str_detect(condition44_53, "major|one allele")) %>% count(condition47_53) # 400 major&one allele in day0 becomes minor in day4, 8 vice versa
+result %>% filter(str_detect(result$condition44_53, 'minor')) %>% count(condition47_53) # 61 minor in day0 becomes major in day4, 8 vice versa 
+
+temp <- result %>% filter(str_detect(result$condition44_53, 'major')) %>% select(c('SNV_ratio47_53', 'condition47_53'))
+temp$condition <- c("major_in_day0")
+colnames(temp) <- c("SNV_ratio","day4_condition","condition")
+
+temp2 <- result %>% filter(str_detect(result$condition44_53, 'minor')) %>% select(c('SNV_ratio47_53', 'condition47_53'))
+temp2$condition <- c("minor_in_day0")
+colnames(temp2) <- c("SNV_ratio","day4_condition","condition")
+
+
+result <- result_44_53 %>% select(c(SNV_ratio,condition))
+temp <- temp %>% select(c(SNV_ratio,condition))
+temp2 <- temp2 %>% select(c(SNV_ratio,condition))
+
+result <- rbind(result, temp, temp2)
+
+result$condition <- factor(result$condition, levels = c("one allele","major","minor","major_in_day0","minor_in_day0"),
+                           labels = c("one allele","Strain 2 (in D0)", "Strain 1 (in D0)","Strain 2 (in D4)","Strain 1(in D4)"))
+
+result04 <- result
+
+
+result48 # day 4 and 8 result
+result04 # day 0 and 4 result
+result04 <- result04 %>% filter(condition!='one allele') # exclude D4 one allele position for clarity
+result48 <- result48 %>% filter(condition!='one allele') # exclude one allele position for clarity
+
+result48 <- result48 %>% mutate(day = ifelse(str_detect(condition, 'D4'), 'D4', 'D8'))
+result04 <- result04 %>% mutate(day = ifelse(str_detect(condition, 'D4'), 'D4', 'D0'))
+result04 <- result04 %>% filter(day!='D4')
+
+result <- rbind(result48, result04)
+result$day <- factor(result$day, levels = c('D0','D4','D8'))
+result <- result %>% mutate(strain = ifelse(str_detect(condition,'Strain 1'),'Strain 1','Strain 2'))
+
+ggboxplot(result, x="day", y="SNV_ratio", color = "condition", palette =c(rep(c("#E64B35FF","#4DBBD5FF"), each=3)), ylab = 'Top 20 genes - Allele frequency',
+          add = "jitter", size=0.5, add.params = list(size=0.2), legend=c('right'), facet.by = 'strain') +
+  rremove('xlab')+
   font("ylab", size = 6)+
-  font("y.text", size = 6)+
+  font("xy.text", size = 6)+
   font("legend.title", size = 6)+
   font("legend.text",size = 6) +
   font("title", size = 6, face = "bold") +
-  theme(legend.key.size = unit(0.3, 'cm'), legend.position = 'bottom', axis.title.x = element_blank())
-
-rm(list=ls())
+  theme(legend.key.size = unit(0.3, 'cm'))
 
 
-#### (Sub fig8-a) Proportion of Major, Minor, and None for Each Sample (it takes some time) ####
+# Merge H5 D0, H5 D4 and H5 D8 #
+
+merged_result <- rbind(result_44_53, result_47_53, result_48_53)
+head(merged_result)
+
+merged_result$true_condition <- paste(merged_result$status, merged_result$condition)
+
+#write.table(merged_result, file="/Users/jwbaek9506/Documents/antibiotic project paper/supple data/final/core_gene_snv_ratio.tsv",quote=F,sep = '\t',row.names = F)
+
+merged_result <- merged_result %>% filter(status=='H5 D0')
+
+gghistogram(merged_result, x="SNV_ratio", fill = 'condition', facet.by= 'status', ylab= 'Top 20 genes - Allele frequency', xlab = 'SNV_ratio', pallet = get_palette('npg',6),
+            bins = 30) +
+  rotate_x_text(angle=45) +
+  rremove('xlab') + 
+  font("ylab", size = 6)+
+  font("xy.text", size = 6)+
+  font("legend.title", size = 6)+
+  font("legend.text",size = 6) +
+  font("title", size = 6, face = "bold") +
+  theme(legend.key.size = unit(0.3, 'cm')) +
+  theme(panel.background = element_rect(fill = "white", color = "black"), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+
+
+#### (Sub fig10-a) the average depth of each contig. (N) ####
+
+load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/H5_D4_AMR_all_position.Rdata") # Load name: H5_D4_AMR_AP
+
+H5_D4_AMR_AP <- H5_D4_AMR_AP %>% mutate(across(everything(), ~ ifelse(. < sum(.) * 0.05, 0, .))) # Replace values that are less than 5% of the column sum with 0
+
+colname <- colnames(H5_D4_AMR_AP) # Get column names (1841 columns)
+modified_colname <- gsub("_[^_]*$", "", colname) %>% unique() # Remove the position information from column names, leaving only the contig names
+modified_colname <- modified_colname[-55] # Remove the 55th entry
+
+result <- data.frame(matrix(nrow=0, ncol=3)) # Create an empty data frame to store results
+
+for (name in modified_colname) {
+  test <- H5_D4_AMR_AP %>% select(starts_with(name)) %>% summarise(across(everything(), sum, na.rm = TRUE)) # Select columns starting with the contig name and summarize their sum
+  column_sums <- colSums(test, na.rm = TRUE) # Calculate column sums
+  sum_data <- data.frame(column_names = names(column_sums), sum_values = column_sums) # Create a data frame with column names and their sums
+  sum_data$contig <- name # Add a column for the contig name
+  
+  #print(name) # Print the contig name
+  #print(summary(sum_data$sum_values)) # Print the summary statistics of the summed values
+  
+  result <- rbind(result, sum_data) # Append the results to the data frame
+}
+
+contigs <- c('k113_10194_length_520744_cov_43.6593_402','k113_16363_length_314213_cov_52.9977_282','k113_18543_length_373955_cov_48.0311_3','k113_31323_length_358434_cov_43.9983_245','k113_7590_length_24589_cov_63.5384_4') # List of specific contigs
+
+result$category <- ifelse(result$contig %in% contigs, "SNP not exist", "SNP exist") # Assign category based on whether the contig is in the specified list
+
+ggplot(result, aes(x = contig, y = sum_values, fill = category)) +
+  geom_boxplot(outlier.size = 0.5) + # Create a boxplot with outlier size of 0.5
+  theme_bw() + # Use a black and white theme
+  scale_fill_manual(values = c("SNP exist" = 'blue', 'SNP not exist'='red'), name = "Contigs") + # Set manual fill colors
+  theme(axis.text.x = element_blank(), 
+        strip.text = element_blank()) + # Remove x-axis text and strip text
+  labs(x = "",
+       y = "Sequencing depth") + # Set axis labels
+  font("ylab", size = 6) + # Set y-axis label font size
+  font("y.text", size = 6) + # Set y-axis text font size
+  font("legend.title", size = 6) + # Set legend title font size
+  font("legend.text", size = 6) + # Set legend text font size
+  font("title", size = 6, face = "bold") + # Set title font size and style
+  theme(legend.key.size = unit(0.3, 'cm'), legend.position = 'bottom', axis.title.x = element_blank()) # Set legend key size and position, and remove x-axis title
+
+rm(list=ls()) # Remove all objects from the environment
+
+#### (Sub fig11-a) Proportion of Major, Minor, and None for Each Sample (it takes some time) ####
 
 load("/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/H5_D4_AMR.Rdata") # 1841
 
@@ -3308,4 +4048,250 @@ ggplot(final_long, aes(x = reorder(Sample, -major_prop), y = Count, fill = Categ
 final_long %>% filter(major_prop > 0.5) %>% select(Sample) %>% unique() # 360
 
 rm(list=ls())
+
+
+
+#### (Sub fig12-a) ANI Heatmap all cohort EARB E. coli ####
+
+Ecoli_ANI <- fread('/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/ANI_Ecoli_all_cohort')
+Ecoli_ANI <- Ecoli_ANI %>% select(V1,V2,V3)
+
+colnames(Ecoli_ANI) <- c('reference','target','ANI')
+
+# Pivot the data to convert into matrix form
+Ecoli_ANI <- dcast(Ecoli_ANI, reference ~ target, value.var = "ANI", fill = 0)
+
+# Set row names
+rownames(Ecoli_ANI) <- Ecoli_ANI$reference
+Ecoli_ANI$reference <- NULL
+
+# Convert to matrix
+Ecoli_ANI_final <- as.matrix(Ecoli_ANI)
+
+# Assign tags based on sample names
+sample_tags <- data.frame(
+  Tag = ifelse(grepl("^ERR1995", colnames(Ecoli_ANI_final)), "antibiotic",
+               ifelse(grepl("^SRR", colnames(Ecoli_ANI_final)), "infant",
+                      ifelse(grepl("^ERR4605", colnames(Ecoli_ANI_final)), "liver cirrhosis", "unknown")))
+)
+rownames(sample_tags) <- colnames(Ecoli_ANI_final)
+
+# Generate heatmap
+pheatmap(Ecoli_ANI_final,
+         cluster_rows = TRUE,
+         cluster_cols = TRUE,
+         display_numbers = FALSE, treeheight_row = 10, treeheight_col = 10,
+         fontsize = 6,
+         main = "ANI Heatmap",
+         annotation_col = sample_tags, # Add sample tag information
+         show_rownames = F, show_colnames = F) # Hide row and column labels
+
+#### (Sub fig12-b) all cohort E. coli circos ####
+
+Ecoli_ANI <- fread('/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/ANI_Ecoli_all_cohort')
+Ecoli_ANI <- Ecoli_ANI %>% select(V1,V2,V3)
+
+colnames(Ecoli_ANI) <- c('reference','target','ANI')
+
+Ecoli_ANI <- Ecoli_ANI %>% mutate(reference_category = ifelse(grepl("^ERR1995", reference), "antibiotic", ifelse(grepl("^SRR", reference), "infant", "liver cirrhosis"))) %>%
+  mutate(target_category = ifelse(grepl("^ERR1995", target), "antibiotic", ifelse(grepl("^SRR", target), "infant", "liver cirrhosis")))
+
+Ecoli_ANI <- Ecoli_ANI %>% filter(reference_category != target_category)
+
+Ecoli_ANI_pairs <- Ecoli_ANI %>%
+  mutate(pair_id = ifelse(reference < target, 
+                          paste(reference, target, sep = "_"),
+                          paste(target, reference, sep = "_")))
+
+Ecoli_ANI_pairs <- as.data.table(Ecoli_ANI_pairs)
+
+# Add the Same_strain column
+Ecoli_ANI_pairs[, Same_strain := all(ANI >= 99.5), by = pair_id]
+
+table(Ecoli_ANI_pairs$Same_strain) # TRUE 1012, FALSE 12300
+
+# Combine all unique sequences
+all_sequences <- unique(c(Ecoli_ANI_pairs$reference, Ecoli_ANI_pairs$target))
+
+# Prepare the data frame for chordDiagram
+chord_data <- Ecoli_ANI_pairs %>%
+  distinct(pair_id, .keep_all = TRUE)  %>%
+  group_by(reference) %>% arrange(Same_strain) %>%
+  select(reference, target, Same_strain) %>%
+  mutate(
+    link_width = ifelse(Same_strain == T, 3, 3),  # Increase thickness for True
+    link_alpha = ifelse(Same_strain == T, 0, 1),  # Increase transparency for False
+    link_color = ifelse(Same_strain == T, 'red', 'blue')
+  )
+
+# Create a data frame for sequence categories
+sequence_categories <- data.frame(
+  sequence = all_sequences,
+  category = ifelse(all_sequences %in% Ecoli_ANI_pairs$reference_category, 
+                    Ecoli_ANI_pairs$reference_category[match(all_sequences, Ecoli_ANI_pairs$reference)], 
+                    Ecoli_ANI_pairs$target_category[match(all_sequences, Ecoli_ANI_pairs$target)])
+)
+
+# Assign colors to categories
+category_colors <- c(
+  "antibiotic" = "#1f78b4",
+  "liver cirrhosis" = "#33a02c",
+  "infant" = "#e31a1c"
+)
+
+# Create a named vector of colors for the grid
+grid_colors <- category_colors[sequence_categories$category]
+names(grid_colors) <- sequence_categories$sequence
+
+# Clear any existing circos plots
+circos.clear()
+
+# Initialize the circos plot parameters
+circos.par(start.degree = 90)
+
+chordDiagram(
+  x = chord_data[, c("reference", "target")],
+  grid.col = grid_colors,
+  col = chord_data$link_color,
+  link.lwd = chord_data$link_width,
+  transparency = chord_data$link_alpha,
+  annotationTrack = c("grid")
+  #preAllocateTracks = 1
+)
+
+# Clear any existing circos plots
+circos.clear()
+
+plot(1, 1, type = "n", xlab = "", ylab = "", xlim = c(0, 2), ylim = c(0, 2), xaxt = 'n', yaxt = 'n')
+
+# Add title
+title(
+  main = expression(
+    atop(
+      italic("E. coli") ~ "Strain Relationships Between All Cohorts",
+      "(exclude same cohort relationships; " * ANI >= 99.5 * "%" * ")"
+    )
+  ),
+  cex.main = 0.6,  # Reduce font size
+  line = 1.5        # Adjust title position slightly upwards
+)
+
+# Add legend for categories
+legend("bottomright", 
+       title = "Source",
+       legend = names(category_colors),
+       fill = category_colors,
+       cex = 0.6,
+       bty = "n")
+
+rm(list=ls())
+
+#### (Sub fig12-c,d) anti-liver cirrhosis E. coli circos ####
+
+Ecoli_ANI <- fread('/Users/jwbaek9506/Documents/analysis/EARB_project/final_data_for_figure/ANI_Ecoli_all_cohort')
+Ecoli_ANI <- Ecoli_ANI %>% select(V1,V2,V3)
+
+colnames(Ecoli_ANI) <- c('reference','target','ANI')
+
+Ecoli_ANI <- Ecoli_ANI %>% mutate(reference_category = ifelse(grepl("^ERR1995", reference), "antibiotic", ifelse(grepl("^SRR", reference), "infant", "liver cirrhosis"))) %>%
+  mutate(target_category = ifelse(grepl("^ERR1995", target), "antibiotic", ifelse(grepl("^SRR", target), "infant", "liver cirrhosis")))
+
+Ecoli_ANI <- Ecoli_ANI %>% filter(reference_category != target_category) 
+#Ecoli_ANI <- Ecoli_ANI %>% filter(reference != target) 
+
+Ecoli_ANI_pairs <- Ecoli_ANI %>%
+  mutate(pair_id = ifelse(reference < target, 
+                          paste(reference, target, sep = "_"),
+                          paste(target, reference, sep = "_")))
+
+Ecoli_ANI_pairs <- as.data.table(Ecoli_ANI_pairs)
+
+# Add the Same_strain column
+Ecoli_ANI_pairs[, Same_strain := all(ANI >= 99.5), by = pair_id]
+
+table(Ecoli_ANI_pairs$Same_strain) # TRUE 1012, FALSE 12300
+
+# Choose cohort
+Ecoli_ANI_pairs <- Ecoli_ANI_pairs %>% filter(reference_category!='infant' & target_category != 'infant')
+
+# Combine all unique sequences
+all_sequences <- unique(c(Ecoli_ANI_pairs$reference, Ecoli_ANI_pairs$target))
+
+# Prepare the data frame for chordDiagram
+chord_data <- Ecoli_ANI_pairs %>%
+  distinct(pair_id, .keep_all = TRUE)  %>%
+  group_by(reference) %>% arrange(Same_strain) %>%
+  select(reference, target, Same_strain) %>%
+  mutate(
+    link_width = ifelse(Same_strain == T, 3, 3),  # Increase the thickness for True
+    link_alpha = ifelse(Same_strain == T, 0, 1),  # Increase the transparency for False
+    link_color = ifelse(Same_strain == T, 'red', 'blue')
+  )
+
+# Create a data frame for sequence categories
+sequence_categories <- data.frame(
+  sequence = all_sequences,
+  category = ifelse(all_sequences %in% Ecoli_ANI_pairs$reference_category, 
+                    Ecoli_ANI_pairs$reference_category[match(all_sequences, Ecoli_ANI_pairs$reference)], 
+                    Ecoli_ANI_pairs$target_category[match(all_sequences, Ecoli_ANI_pairs$target)])
+)
+
+# Assign colors to categories
+category_colors <- c(
+  "antibiotic" = "#1f78b4",
+  "liver cirrhosis" = "#33a02c",
+  "infant" = "#e31a1c"
+)
+
+# Create a named vector of colors for the grid
+grid_colors <- category_colors[sequence_categories$category]
+names(grid_colors) <- sequence_categories$sequence
+
+# Clear any existing circos plots
+circos.clear()
+
+# Initialize the circos plot parameters
+circos.par(start.degree = 90)
+
+chordDiagram(
+  x = chord_data[, c("reference", "target")],
+  grid.col = grid_colors,
+  col = chord_data$link_color,
+  link.lwd = chord_data$link_width,
+  transparency = chord_data$link_alpha,
+  annotationTrack = c("grid")
+  #preAllocateTracks = 1
+)
+
+# Clear any existing circos plots
+circos.clear()
+
+plot(1, 1, type = "n", xlab = "", ylab = "", xlim = c(0, 2), ylim = c(0, 2), xaxt = 'n', yaxt = 'n')
+
+# Add the title
+title(
+  main = expression(
+    atop(
+      italic("E. coli") ~ "Strain Relationships Between Antibiotic-Liver cirrhosis",
+      "(intra-cohort  relations not shown; " * ANI >= 99.5 * "%" * ")"
+    )
+  ),
+  cex.main = 0.6,  # Reduce the font size of the title
+  line = 1.5        # Slightly adjust the title position upwards
+)
+
+# Assign colors to categories
+category_colors <- c(
+  "antibiotic" = "#1f78b4",
+  "liver cirrhosis" = "#33a02c"
+)
+
+# Add the legend
+legend("bottomright", 
+       title = "Source",
+       legend = names(category_colors),
+       fill = category_colors,
+       cex = 0.6,
+       bty = "n")
+
 
